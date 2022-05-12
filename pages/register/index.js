@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Button, TextField, FormControl } from '@mui/material';
 import styles from "../../styles/Home.module.css";
 import css from "styled-jsx/css";
 
@@ -16,108 +17,114 @@ export default function RegisterPage() {
       <h1>회원가입</h1>
       <div>
         <form id="register-form">
-          <ul className="register-items">
-            <li>
-              <label htmlFor="email">Email </label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                placeholder="입력하세요"
-                className="register-class"
+        <h2>
+            <TextField
+            type="email"
+            name="email"
+            id="email"
+            className="login-class"
+            label="email" 
+            variant="outlined"
+            />
+            </h2>
+            <h2>
+              <TextField
+              type="password"
+              name="password"
+              id="password"
+              className="login-class"
+              label="비밀번호" 
+              variant="outlined"
               />
-            </li>
-            <li>
-              <label htmlFor="password">비밀번호 </label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                placeholder="입력하세요"
-                className="register-class"
+              </h2>
+              <h2>
+              <TextField
+              type="password"
+              name="passwordcheck"
+              id="passwordcheck"
+              className="login-class"
+              label="비밀번호 확인" 
+              variant="outlined"
               />
-            </li>
-            <li>
-              <label htmlFor="passwordcheck">비밀번호 확인 </label>
-              <input
-                type="password"
-                name="passwordcheck"
-                id="passwordcheck"
-                placeholder="입력하세요"
-                className="register-class"
+              </h2>
+              <h2>
+              <TextField
+              type="nickname"
+              name="nickname"
+              id="nickname"
+              className="login-class"
+              label="닉네임" 
+              variant="outlined"
               />
-            </li>
-            <li>
-              <label htmlFor="nickname">닉네임 </label>
-              <input
-                type="nickname"
-                name="nickname"
-                id="nickname"
-                placeholder="입력하세요"
-                className="register-class"
+              </h2>
+              <h2>
+              <TextField
+              type="academic_background"
+              name="academic_background"
+              id="academic_background"
+              className="login-class"
+              label="학력" 
+              variant="outlined"
               />
-            </li>
-            <li>
-              <label htmlFor="academic_background">학력 </label>
-              <input
-                type="academic_background"
-                name="academic_background"
-                id="academic_background"
-                placeholder="입력하세요"
-                className="register-class"
+              </h2>
+              <h2>
+              <TextField
+              type="contact_information"
+              name="contact_information"
+              id="contact_information"
+              className="contact_information"
+              label="연락처" 
+              variant="outlined"
               />
-            </li>
-            <li>
-              <label htmlFor="contact_information">연락처 </label>
-              <input
-                type="contact_information"
-                name="contact_information"
-                id="contact_information"
-                placeholder="입력하세요"
-                className="register-class"
+              </h2>
+              <h2>
+              <FormControl fullWidth sx={{ m: 1, width: '35ch' }}>
+              <TextField
+              type="address"
+              name="address"
+              id="address"
+              className="address"
+              label="주소" 
+              variant="outlined"
               />
-            </li>
-            <li>
-              <label htmlFor="address">주소 </label>
-              <input
-                type="address"
-                name="address"
-                id="address"
-                placeholder="입력하세요"
-                className="register-class"
+              </FormControl>
+              </h2>
+              <h2>
+              <FormControl fullWidth sx={{ m: 1, width: '50ch' }}>
+              <TextField
+              type="self_introduction"
+              name="self_introduction"
+              id="self_introduction"
+              className="self_introduction"
+              label="자기소개" 
+              multiline
+              maxRows={4}
+              variant="outlined"
               />
-            </li>
-            <li>
-              <label htmlFor="self-introduction">자기소개 </label>
-              <input
-                type="self-introduction"
-                name="self-introduction"
-                id="self-introduction"
-                placeholder="입력하세요"
-                className="register-class"
+              </FormControl>
+              </h2>
+              <h2>
+              <TextField
+              type="area_of_interest"
+              name="area_of_interest"
+              id="area_of_interest"
+              className="area_of_interest"
+              label="관심분야" 
+              variant="outlined"
               />
-            </li>
-            <li>
-              <label htmlFor="area_of_interest">관심분야 </label>
-              <input
-                type="area_of_interest"
-                name="area_of_interest"
-                id="area_of_interest"
-                placeholder="입력하세요"
-                className="register-class"
-              />
-            </li>
-            <li>
-              <button type="submit" className="primary">
-                확인
-              </button>
-            </li>
-          </ul>
+              </h2>
+            
+            <Button 
+            type="submit"
+            className="primary"
+            variant="outlined">
+              확인</Button>
+            
         </form>
       </div>
       <h2 className={styles.title}>
-        <Link href="/">
-          <a>메인으로</a>
+      <Link href="/">
+        <Button variant="contained">메인화면</Button>
         </Link>
       </h2>
       <style jsx>{style}</style>

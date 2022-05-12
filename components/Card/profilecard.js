@@ -1,7 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
-import styles from "../styles/Home.module.css";
+import {List, ListItem, ListItemText, ListItemAvatar, Avatar, Divider, Typography} from '@mui/material';
+import styles from "../../styles/Home.module.css";
 import css from "styled-jsx/css";
 import Image from "next/image";
 const imgType = { png: ".png" };
@@ -25,27 +26,59 @@ const Pcard = (props) => {
 
   return (
     <>
-    <div>
-      <Image
-          src={`${profilePhotoAddress}${props.myPhoto}${imgType.png}`}
-          alt="Picture of me"
-          width={photosize}
-          height={photosize}
-        />
-      <header>
-        <Image
-          src={`${simbolImageAddress}${props.myField}${imgType.png}`}
-          alt="Picture of the author"
-          width={photosize}
-          height={photosize}
-        />
-      </header>
-      <header>{props.explan}</header>
-      <header>개인정보</header>
-      <header>{props.name}</header>
-      <header>{props.address}</header>
-      <header>{props.contactAddress}</header>
-      <header>기술스택</header>
+    <List
+      sx={{
+        width: '100%',
+        maxWidth: 360,
+        bgcolor: 'background.paper',
+      }}
+    >
+            <ListItem>
+        <ListItemAvatar>
+    <Avatar  alt="Picture of me" src={`${profilePhotoAddress}${props.myPhoto}${imgType.png}`} />
+    </ListItemAvatar>
+    </ListItem>
+            <ListItem>
+        <ListItemAvatar>
+        <Avatar  alt="Picture of the author" src={`${simbolImageAddress}${props.myField}${imgType.png}`} />
+        </ListItemAvatar>
+        <ListItemText primary="내 분야"/>
+      </ListItem>
+      <ListItem>
+        <ListItemText primary="자기소개" secondary={props.explan}/>
+      </ListItem>
+      <Divider component="li" />
+      <li>
+        <Typography
+          sx={{ mt: 0.5, ml: 2 }}
+          color="text.secondary"
+          display="block"
+          variant="caption"
+        >
+          개인정보
+        </Typography>
+      </li>
+
+      <ListItem>
+        <ListItemText primary="이름" secondary={props.name}/>
+      </ListItem>
+      <ListItem>
+        <ListItemText primary="주소" secondary={props.address}/>
+      </ListItem>
+      <ListItem>
+        <ListItemText primary="연락처" secondary={props.contactAddress}/>
+      </ListItem>
+      <Divider component="li" />
+      <li>
+        <Typography
+          sx={{ mt: 0.5, ml: 2 }}
+          color="text.secondary"
+          display="block"
+          variant="caption"
+        >
+          기술스택
+        </Typography>
+      </li>
       <header>
         <Image
           src={`${skillStackAddress}${props.skillStack[0]}${imgType.png}`}
@@ -72,7 +105,17 @@ const Pcard = (props) => {
           height={photosize}
         />
       </header>
-      <header>타인평가</header>
+      <Divider component="li" />
+      <li>
+        <Typography
+          sx={{ mt: 0.5, ml: 2 }}
+          color="text.secondary"
+          display="block"
+          variant="caption"
+        >
+          타인평가
+        </Typography>
+      </li>
       <header>
         <Image
           src={`${estimateAddress}${props.myEstimate[0]}${imgType.png}`}
@@ -93,8 +136,8 @@ const Pcard = (props) => {
           height={photosize}
         />
         </header>
-    </div>
     <style jsx>{style}</style>
+    </List>
     </>
   );
 };
