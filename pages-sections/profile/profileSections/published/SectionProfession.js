@@ -6,7 +6,6 @@ import GridItem from "../../../../components/Grid/GridItem";
 import TagsContainer from "../../../../components/Tags/TagsContainer";
 
 import { makeStyles } from "@material-ui/core/styles";
-import ProfessionSearcher from "../../../../components/Tags/Profession/ProfessionSearcher";
 
 const pageLabels = {
   tech_stack: "분야 생성",
@@ -21,10 +20,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-const Published = ({
-    handleProfession,
-    profession,
-}) => {
+const Published = ({ handleProfession, profession }) => {
   const classes = useStyles();
   const [loading, setLoading] = React.useState(true);
 

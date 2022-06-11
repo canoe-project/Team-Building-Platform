@@ -136,7 +136,7 @@ const Tag = ({ name, type, form, children }) => {
             >
               <Image
                 src={
-                  getTagInfo.image_url !== null
+                  getTagInfo !== null && getTagInfo !== undefined
                     ? getTagInfo.image_url
                     : `/asset/image/background/contest/default.svg`
                 }
@@ -146,19 +146,22 @@ const Tag = ({ name, type, form, children }) => {
               {children}
             </IconButton>
             <Modal
-              title={getTagInfo.name !== null ? getTagInfo.name : ""}
+              title={
+                getTagInfo !== null && getTagInfo !== undefined
+                  ? getTagInfo.name
+                  : ""
+              }
               open={modalToggle}
               handleModalClose={handleModalClose}
             >
               <SectionTagsView
                 body={
-                  getTagInfo.description !== null &&
-                  getTagInfo.description !== undefined
+                  getTagInfo !== null && getTagInfo !== undefined
                     ? getTagInfo.description
                     : ""
                 }
                 image_url={
-                  getTagInfo.image_url !== null
+                  getTagInfo !== null && getTagInfo !== undefined
                     ? getTagInfo.image_url
                     : `/asset/image/background/contest/default.svg`
                 }
