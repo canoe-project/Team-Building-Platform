@@ -140,10 +140,11 @@ const contestReducer = (prevState, action) => {
 };
 
 const reqUpdate = async (id, article, contest, techStack, professtion, tag) => {
+
   const body = await {
     article: {
       create: {
-        published: true,
+        published: false,
         updatedAt: moment().toISOString(),
         viewCount: 0,
         likeCount: 0,

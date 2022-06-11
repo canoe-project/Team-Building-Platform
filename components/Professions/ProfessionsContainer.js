@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import { makeStyles } from "@material-ui/core/styles";
 
-import GridContainer from "../Grid/GridContainer";
+import GridContainer from "../Grid/GridContainer2";
 import GridItem2 from "../Grid/GridItem2";
 
 const styles = {
@@ -21,7 +21,7 @@ const useStyles = makeStyles(styles);
 
 const imgType = { png: ".png" };
 
-var professionIconImageAddress = "/asset/icon/tech_stack/profession_icon_";
+var professionIconImageAddress = "/asset/icon/profession/profession_icon_";
 
 const ProfessionName = (props) => {
   const classes = useStyles();
@@ -40,8 +40,8 @@ const ProfessionName = (props) => {
                 className={classes.img}
                 src={
                   props.id !== null
-                    ? `${professionIconImageAddress}${props.id}${imgType.png}`
-                    : `/asset/image/background/contest/default.svg`
+                  ? `${professionIconImageAddress}${props.id}${imgType.png}`
+                  : `/asset/image/background/contest/default.svg` 
                 }
                 alt="photo"
               />
@@ -69,17 +69,21 @@ const ProfessionsContainer = (props) => {
           p: 0.5,
           m: 0,
           flexDirection: "row",
+          borderRadius: '16px'
         }}
         component="ul"
         bgcolor="text.disabled"
       >
+
         {props.tags.map((professionData, i) => {
           return (
+
             <ProfessionName
               id={professionData.id}
               name={professionData.name}
               key={i}
             />
+
           );
         })}
       </Box>

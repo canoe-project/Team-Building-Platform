@@ -34,12 +34,25 @@ const styles = {
     display: "inline-flex",
     marginLeft: "0.5rem",
   },
+  iconLabel2: {
+    fontSize: "1rem",
+    alignItems: "center",
+    display: "inline-flex",
+    marginLeft: "0.5rem",
+  },
   roleContain: {
     marginBottom: "1rem",
     marginTop: "1rem",
   },
   roleChildren: {
     padding: "0.5rem",
+  },
+  iconButton: {
+    backgroundColor: "white",
+  },
+  img: {
+    width: "2rem",
+    height: "2rem",
   },
 };
 
@@ -94,7 +107,8 @@ const Tag = ({ name, type, form, children }) => {
             >
               <Image
                 src={
-                  getTagInfo.image_url !== null
+                  getTagInfo?.image_url !== null &&
+                  getTagInfo?.image_url !== undefined
                     ? getTagInfo.image_url
                     : `/asset/image/background/contest/default.svg`
                 }
@@ -102,23 +116,30 @@ const Tag = ({ name, type, form, children }) => {
                 height={24}
               />
               <p className={classes.iconLabel}>
-                {getTagInfo.name !== null ? getTagInfo.name : ""}
+                {getTagInfo?.name !== null && getTagInfo?.name !== undefined
+                  ? getTagInfo.name
+                  : ""}
               </p>
             </IconButton>
             <Modal
-              title={getTagInfo.name !== null ? getTagInfo.name : ""}
+              title={
+                getTagInfo?.name !== null && getTagInfo?.name !== undefined
+                  ? getTagInfo.name
+                  : ""
+              }
               open={modalToggle}
               handleModalClose={handleModalClose}
             >
               <SectionTagsView
                 body={
-                  getTagInfo.description !== null &&
-                  getTagInfo.description !== undefined
+                  getTagInfo?.description !== null &&
+                  getTagInfo?.description !== undefined
                     ? getTagInfo.description
                     : ""
                 }
                 image_url={
-                  getTagInfo.image_url !== null
+                  getTagInfo?.image_url !== null &&
+                  getTagInfo?.image_url !== undefined
                     ? getTagInfo.image_url
                     : `/asset/image/background/contest/default.svg`
                 }
@@ -171,24 +192,48 @@ const Tag = ({ name, type, form, children }) => {
             </Modal>
           </Box>
         );
-      case "iconOnly_profile":
+      case "icon_profile":
         return (
-          <IconButton
-            aria-label="delete"
-            size="large"
-            className={classes.iconbutton}
-          >
-            <img
+          <Box>
+            <IconButton
+              className={classes.iconButton}
+              onClick={handleModalOpen}
+            >
+          <img
               className={classes.img}
               src={
-                getTagInfo?.image_url !== null &&
-                getTagInfo?.image_url !== undefined
+                getTagInfo.image_url !== null
                   ? getTagInfo.image_url
                   : `/asset/image/background/contest/default.svg`
               }
               alt="photo"
             />
-          </IconButton>
+            </IconButton>
+            <Modal
+              title={
+                getTagInfo?.name !== null && getTagInfo?.name !== undefined
+                  ? getTagInfo.name
+                  : ""
+              }
+              open={modalToggle}
+              handleModalClose={handleModalClose}
+            >
+              <SectionTagsView
+                body={
+                  getTagInfo?.description !== null &&
+                  getTagInfo?.description !== undefined
+                    ? getTagInfo.description
+                    : ""
+                }
+                image_url={
+                  getTagInfo?.image_url !== null &&
+                  getTagInfo?.image_url !== undefined
+                    ? getTagInfo.image_url
+                    : `/asset/image/background/contest/default.svg`
+                }
+              />
+            </Modal>
+          </Box>
         );
       case "textOnly":
         return (

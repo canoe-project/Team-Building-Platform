@@ -2,14 +2,22 @@ import { resolve } from "path";
 import prisma from "../../../../utilities/prisma/client";
 
 const CountPage = async (req, res) => {
-  const category = req.query.category;
-  const currentProfession = req.query.currentProfession;
+  const { page, take, category, currentProfession, contest, tag } = req.query;
   const result = await prisma?.[`${category}Article`].count({
     ...(currentProfession !== undefined && {
       where: {
         contest: {
           profession: {
             some: { name: currentProfession },
+          },
+        },
+      },
+    }),
+    ...(tag !== undefined && {
+      where: {
+        contest: {
+          Tag: {
+            some: { name: tag },
           },
         },
       },

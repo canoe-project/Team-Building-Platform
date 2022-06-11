@@ -15,8 +15,8 @@ const pageLabels = {
 };
 
 const styles = {
-  tabGridIteam: {
-    display: "inline-block",
+  textEditer: {
+    height: "25rem",
   },
 };
 
@@ -38,10 +38,19 @@ const Published = ({
 
   return (
     <GridContainer direction="column" spacing={2}>
-      <GridItem className={classes.tabGridIteam}>
+      <GridItem>
+      <Typography>이메일</Typography>
+      </GridItem>
+      <GridItem>
         <TitleInput onChange={handleEmailChange} data={email} />
       </GridItem>
-      <GridItem className={classes.tabGridIteam}>
+      <GridItem>
+      <Typography>&nbsp;</Typography>
+      </GridItem>
+      <GridItem>
+      <Typography>자기소개</Typography>
+      </GridItem>
+      <GridItem>
         <Editor
         className={classes.textEditer}
           onChangeHandle={handleContentChange}

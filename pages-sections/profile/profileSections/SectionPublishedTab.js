@@ -89,6 +89,114 @@ const citizensReducer = (prevState, action) => {
   }
 };
 
+const reqUpdate = async (citizens, techStack, id) => {
+  const init = {
+    citizens: {
+      update: {
+        tech_stack: {
+          set: [],
+        },
+      },
+    },
+    include: {
+      citizens: {
+        tech_stack: true,
+      },
+    },
+  };
+  const body = await {
+    citizens: {
+      update: {
+        // profession : citizens.profession,
+        ...(citizens.profession[0] !== undefined && {
+          profession: {
+            connect: citizens.profession.map((stack) => {
+              return {
+                name: stack.name,
+              };
+            }),
+          },
+        }),
+        ...(techStack[0] !== undefined && {
+          tech_stack: {
+            connect: techStack.map((stack) => {
+              return {
+                name: stack.name,
+              };
+            }),
+          },
+        }),
+        ...(citizens.certificate[0] !== undefined && {
+          certificate: {
+            connect: citizens.certificate.map((stack) => {
+              return {
+                name: stack.name,
+              };
+            }),
+          },
+        }),
+        //program : citizens.program,
+        ...(citizens.certificate[0] !== undefined && {
+          certificate: {
+            connect: citizens.certificate.map((stack) => {
+              return {
+                name: stack.name,
+              };
+            }),
+          },
+        }),
+
+        user: {
+          update: {
+            email: citizens.user.email,
+          },
+        },
+
+        profile: {
+          update: {
+            content: citizens.profile.content,
+            view_count: citizens.profile.view_count,
+            like_count: citizens.profile.like_count,
+            ...(citizens.profile[0] !== undefined && {
+              resume: {
+                connect: citizens.profile.resume.map((stack) => {
+                  return {
+                    name: stack.name,
+                  };
+                }),
+              },
+            }),
+          },
+        },
+
+        ...(citizens[0] !== undefined && {
+          user_attention_profession: {
+            connect: citizens.user_attention_profession.map((stack) => {
+              return {
+                name: stack.name,
+              };
+            }),
+          },
+        }),
+      }
+    }
+  }
+  const initData = await fetch(`${process.env.HOSTNAME}/api/profile/${id}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(init),
+  }).then((response) => {
+    return response.json();
+  });
+  const data = await fetch(`${process.env.HOSTNAME}/api/profile/${id}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  }).then((response) => {
+    return response.json();
+  });
+};
+
 const styles = {
   tabGridIteam: {
     display: "inline-block",
@@ -112,6 +220,7 @@ const PublishedTab = ({ citizensValue, handleEditing }) => {
   );
   const [value, setValue] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [selectTechStack, setTechStack] = useState([]);
   const classes = useStyles(styles);
 
   const handleChange = (event, newValue) => {
@@ -120,92 +229,12 @@ const PublishedTab = ({ citizensValue, handleEditing }) => {
 
   const { data: session, status } = useSession();
 
-  const reqUpdate = async (id) => {
-    const body = await {
-      // profession : citizens.profession,
-      ...(citizens.profession[0] !== undefined && {
-        profession: {
-          connect: citizens.profession.map((stack) => {
-            return {
-              name: stack.name,
-            };
-          }),
-        },
-      }),
-      ...(citizens.tech_stack[0] !== undefined && {
-        tech_stack: {
-          connect: citizens.tech_stack.map((stack) => {
-            return {
-              name: stack.name,
-            };
-          }),
-        },
-      }),
-      ...(citizens.certificate[0] !== undefined && {
-        certificate: {
-          connect: citizens.certificate.map((stack) => {
-            return {
-              name: stack.name,
-            };
-          }),
-        },
-      }),
-      //program : citizens.program,
-      ...(citizens.certificate[0] !== undefined && {
-        certificate: {
-          connect: citizens.certificate.map((stack) => {
-            return {
-              name: stack.name,
-            };
-          }),
-        },
-      }),
-
-      user: {
-        update: {
-          email: citizens.user.email,
-        },
-      },
-
-      profile: {
-        update: {
-          content: citizens.profile.content,
-          view_count: citizens.profile.view_count,
-          like_count: citizens.profile.like_count,
-          ...(citizens.profile[0] !== undefined && {
-            resume: {
-              connect: citizens.profile.resume.map((stack) => {
-                return {
-                  name: stack.name,
-                };
-              }),
-            },
-          }),
-        },
-      },
-
-      ...(citizens[0] !== undefined && {
-        user_attention_profession: {
-          connect: citizens.user_attention_profession.map((stack) => {
-            return {
-              name: stack.name,
-            };
-          }),
-        },
-      }),
-    };
-    const data = await fetch(`${process.env.HOSTNAME}/api/profile/${id}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    }).then((response) => {
-      return response.json();
-    });
-  };
+  
 
   useEffect(() => {
     Promise.all([
       citizensDispatch({ type: "init", result: citizensValue }),
+      setTechStack(citizensValue.tech_stack),
     ]).then(() => {
       setLoading(false);
     });
@@ -213,6 +242,8 @@ const PublishedTab = ({ citizensValue, handleEditing }) => {
   useEffect(() => {
     Promise.all([
       citizensDispatch({ type: "init", result: citizensValue }),
+      setTechStack(citizensValue.tech_stack),
+      console.log(citizensValue.tech_stack)
     ]).then(() => {
       setLoading(false);
     });
@@ -239,11 +270,20 @@ const PublishedTab = ({ citizensValue, handleEditing }) => {
     citizensDispatch({ type: "citizensProgram", result: data });
   };
   const handleTechStack = (data) => {
-    citizensDispatch({ type: "citizensTechStack", result: data });
+    const newTechStack = selectTechStack.filter(
+      (techStack) => techStack.name !== data.name
+    );
+    setTechStack([...newTechStack, data]);
+  };
+  const handleTechStackDelete = (name) => {
+    const newTechStack = selectTechStack.filter(
+      (techStack) => techStack.name !== name
+    );
+    setTechStack([...newTechStack]);
   };
 
   const handlePublished = async (id) => {
-    await reqUpdate(id);
+    await reqUpdate(citizens, selectTechStack, id);
     handleEditing();
   };
 
@@ -252,7 +292,7 @@ const PublishedTab = ({ citizensValue, handleEditing }) => {
   return (
     <MainLayout>
       <GridContainer direction="row" className={classes.contestHead}>
-        <GridItem xs={3} sm={3} md={3} className={classes.tabGridIteam}>
+        <GridItem2 xs={3} sm={3} md={3} className={classes.tabGridIteam}>
           <Tabs
             orientation="vertical"
             value={value}
@@ -267,8 +307,8 @@ const PublishedTab = ({ citizensValue, handleEditing }) => {
             {/* <Tab label="자격증" {...a11yProps(4)} /> */}
             <Tab label="활용 가능한 프로그램" {...a11yProps(4)} />
           </Tabs>
-        </GridItem>
-        <GridItem xs={9} sm={9} md={9} className={classes.tabGridIteam}>
+        </GridItem2>
+        <GridItem2 xs={9} sm={9} md={9} className={classes.tabGridIteam}>
           <TabPanel value={value} index={0}>
             <SectionProfile
               email={citizens.user.email}
@@ -296,19 +336,8 @@ const PublishedTab = ({ citizensValue, handleEditing }) => {
           <TabPanel value={value} index={3}>
             <SectionTags
               handleTechStack={handleTechStack}
+              handleTechStackDelete={handleTechStackDelete}
               tech_stacks={citizens.tech_stack}
-            />
-          </TabPanel>
-          <TabPanel value={value} index={4}>
-            <SectionResume
-              handleResume={handleResume}
-              resume={citizens.profile.resume}
-            />
-          </TabPanel>
-          <TabPanel value={value} index={5}>
-            <SectionCertificate
-              handleCertificate={handleCertificate}
-              certificate={citizens.certificate}
             />
           </TabPanel>
           <TabPanel value={value} index={4}>
@@ -317,10 +346,12 @@ const PublishedTab = ({ citizensValue, handleEditing }) => {
               program={citizens.program}
             />
           </TabPanel>
-          <Button onClick={() => handlePublished(citizensValue.user_id)}>
+          <Button onClick={() => handlePublished(citizensValue.user_id)}
+            color="success"
+          >
             {pageLabels.submitButton}
           </Button>
-        </GridItem>
+        </GridItem2>
       </GridContainer>
     </MainLayout>
   );

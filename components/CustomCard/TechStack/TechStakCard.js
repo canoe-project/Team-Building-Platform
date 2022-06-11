@@ -4,10 +4,11 @@ import Image from "next/image";
 import IconButton from "@mui/material/IconButton";
 import Modal from "../../../components/Modal/Modal";
 import SectionTagsView from "../../../pages-sections/tags/SectionTagsView";
-import { Box } from "@material-ui/core";
+import { Box, Icon } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import GridContainer from "../../Grid/GridContainer";
 import GridItem from "../../Grid/GridItem";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 const pageLabels = {
   contestBodyLabel: "개요",
@@ -36,11 +37,21 @@ const styles = {
   roleChildren: {
     padding: "0.5rem",
   },
+  deleteIcon: {
+    top: "0.25rem",
+    left: "5rem",
+    width: "0.5rem",
+    height: "0.5rem",
+    margin: "0",
+  },
+  deleteButton: {
+    width: "0.25rem",
+  },
 };
 
 const useStyles = makeStyles(styles);
 
-const RoleCard = ({ data }) => {
+const TechStackCard = ({ data, handle }) => {
   const classes = useStyles();
 
   const [loading, setLoading] = useState(true);
@@ -55,7 +66,15 @@ const RoleCard = ({ data }) => {
 
   useEffect(() => {}, []);
   return (
-    <Fragment>
+    <Box>
+      <IconButton
+        className={classes.deleteIcon}
+        onClickCapture={(e) => {
+          handle(data.name);
+        }}
+      >
+        <CloseRoundedIcon />
+      </IconButton>
       <IconButton className={classes.iconButtonLabel} onClick={handleModalOpen}>
         <Image
           src={
@@ -70,6 +89,7 @@ const RoleCard = ({ data }) => {
           {data.name !== null ? data.name : ""}
         </p>
       </IconButton>
+
       <Modal
         title={data.name !== null ? data.name : ""}
         open={modalToggle}
@@ -88,8 +108,8 @@ const RoleCard = ({ data }) => {
           }
         />
       </Modal>
-    </Fragment>
+    </Box>
   );
 };
 
-export default RoleCard;
+export default TechStackCard;

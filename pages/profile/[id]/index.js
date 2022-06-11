@@ -1,55 +1,86 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Card from "../../../components/CustomCard/Profile/ProfileCard";
-import Card2 from "../../../components/CustomCard/Profile/ProfileCard2";
 import css from "styled-jsx/css";
 import React, { useEffect, useState, useReducer, Fragment } from "react";
 import styles from "../../../styles/jss/nextjs-material-kit/components/cardStyle";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, Tabs, Tab, IconButton } from "@mui/material";
+import { Button, Tabs, Tab,  IconButton } from "@mui/material";
 import { getSession, useSession, signIn, signOut } from "next-auth/react";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteIcon from '@mui/icons-material/Favorite';
+
+
+import Header from "../../../components/header/Header";
 
 // import ProfileOverview from "../../../../pages-sections/profile/profileSections/SectionOverview";
 // import ProfileHeaderImage from "../../../../pages-sections/profile/profileSections/SectionHeaderImage";
 import ProfilePublishedTab from "../../../pages-sections/profile/profileSections/SectionPublishedTab";
-import MainLayout from "../../../components/Layout/MainLayout";
+
+
+
+
 const useStyles = makeStyles(styles);
 
-const requestProfileUpdate = async () => {
-  const data = await fetch(`${process.env.HOSTNAME}/api/profile/${id}`, {
+
+const requestProfileUpdate = async() => {
+
+ 
+
+
+  
+  
+
+
+  
+
+  const data = await fetch (
+  `${process.env.HOSTNAME}/api/profile/${id}`,
+  {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  }).then((response) => {
-    return response.json();
-  });
-};
+    body : JSON.stringify(body)
+  }
+).then((response) => {
+  return response.json();
+})
+}
 
-const requestProfileUpdate2 = async (id) => {
-  const data = await fetch(`${process.env.HOSTNAME}/api/profile/${id}`, {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-  }).then((response) => {
-    return response.json();
-  });
-};
+const requestProfileUpdate2 = async(id) => {
 
-const requestProfileUpdateViewCount = async (id) => {
-  const data = await fetch(`${process.env.HOSTNAME}/api/profile/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-  }).then((response) => {
+
+
+
+  const data = await fetch (
+    `${process.env.HOSTNAME}/api/profile/${id}`,
+    {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    }
+  ).then((response) => {
     return response.json();
-  });
-};
+  })
+  }
+
+  const requestProfileUpdateViewCount = async(id) => {
+
+    const data = await fetch (
+      `${process.env.HOSTNAME}/api/profile/${id}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+      }
+    ).then((response) => {
+      return response.json();
+    })
+    }
+
 
 export default function CompetitionSearchPage({ data }) {
-  const { data: user } = useSession;
+  const {data: user} =useSession
   const classes = useStyles();
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const { data: session } = useSession();
+  const {data: session} =useSession()
   const [editing, setEditing] = React.useState(false);
 
   const handleEditing = () => {
@@ -57,40 +88,37 @@ export default function CompetitionSearchPage({ data }) {
   };
 
   return (
-    <MainLayout>
-      {editing ? (
-        <ProfilePublishedTab
-          citizensValue={data[0]}
-          handleEditing={handleEditing}
-        />
-      ) : (
-        <Fragment>
-          <Button
-            onClick={() => handleEditing()}
-            variant="outlined"
-            component="span"
-          >
-            프로필 수정
-          </Button>
-          <Card contestID={data} />
-
-          <Link
-            href={`${process.env.HOSTNAME}/profile/${router.query.id}`}
-            prefetch
-            passHref
-          >
-            <Button
-              onClick={() => handlePublished(data[0].user_id)}
-              variant="contained"
-              component="span"
-            >
-              좋아요
-            </Button>
-          </Link>
-          <Card2 contestID={data} />
-        </Fragment>
-      )}
-    </MainLayout>
+    <>
+    {editing ? (
+      <ProfilePublishedTab
+      citizensValue={data[0]}
+      handleEditing={handleEditing}
+      />
+    ) : (
+    <Fragment>
+      <Header/>
+      <Link
+      href={`${process.env.HOSTNAME}/profile/${router.query.id}`}
+       prefetch
+      passHref
+     >
+    <IconButton onClick={()=> 
+      handlePublished(data[0].user_id)
+      } 
+      >
+        <FavoriteIcon style={{ color: "red" }}/>
+      </IconButton>
+    </Link>
+    <div>&nbsp;&nbsp;{data[0].profile.like_count}</div>
+    <Card 
+    contestID={data}
+    handleEditing={handleEditing}
+    />
+    </Fragment>
+    
+    )
+    }
+    </>
   );
 }
 
@@ -103,12 +131,16 @@ const handlePublishedViewCount = async (data) => {
 };
 
 export async function getServerSideProps(context) {
-  const { id } = context.query;
 
-  const data = await fetch(`${process.env.HOSTNAME}/api/profile/${id}`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  }).then((response) => {
+  const {id} = context.query;
+
+  const data = await fetch(
+    `${process.env.HOSTNAME}/api/profile/${id}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }
+  ).then((response) => {
     return response.json();
   });
 

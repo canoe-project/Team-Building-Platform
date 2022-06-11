@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import { makeStyles } from "@material-ui/core/styles";
 
-import GridContainer from "../Grid/GridContainer";
+import GridContainer from "../Grid/GridContainer2";
 import GridItem2 from "../Grid/GridItem2";
 
 const styles = {
@@ -62,6 +62,7 @@ const ProgramContainer = (props) => {
           p: 0.5,
           m: 0,
           flexDirection: "row",
+          borderRadius: '16px'
         }}
         component="ul"
         bgcolor="text.disabled"

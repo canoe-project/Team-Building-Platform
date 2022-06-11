@@ -3,16 +3,11 @@ import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Tag from "./Tag";
 
-
-
 const ListItem = styled("li")(({ theme }) => ({
   margin: theme.spacing(0.5),
 }));
 
-
-
 export default function ChipsArray({ tags, type, form, children }) {
-
   console.log(tags);
 
   return (
@@ -25,6 +20,7 @@ export default function ChipsArray({ tags, type, form, children }) {
         p: 0.5,
         m: 0,
         flexDirection: "row",
+        borderRadius: '16px'
       }}
       component="ul"
       bgcolor="text.disabled"

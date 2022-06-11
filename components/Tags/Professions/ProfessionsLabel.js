@@ -50,19 +50,19 @@ const ProfessionsLabel = ({ data, children }) => {
   }, [data]);
 
   return (
-    <Tooltip title={professions.name}>
+    <Tooltip title={professions?.name}>
       <Box>
         <div className={classes.root}>
-          <img src={professions.image_url} className={classes.icon}></img>
+          <img src={professions?.image_url} className={classes.icon}></img>
 
           <style jsx>{`
             div {
-              background-color: ${professions.color};
+              background-color: ${professions?.color};
             }
           `}</style>
         </div>
-        <Typography className={classes.label}>
-          {professions.name} {children}
+        <Typography className={classes?.label}>
+          {professions?.name} {children}
         </Typography>
       </Box>
     </Tooltip>

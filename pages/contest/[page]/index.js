@@ -12,6 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 import FilrerContainer from "../../../components/Article/PageFiler/FilerContain";
 import FilterMenuItem from "../../../components/Article/PageFiler/FilterMenuItem";
+import FilterToggleItem from "../../../components/Article/PageFiler/FilterToggleItem";
 import { IconButton } from "@material-ui/core";
 import AddIcon from "@mui/icons-material/Add";
 import palettes from "../../../styles/nextjs-material-kit/palettes";
@@ -22,6 +23,8 @@ import Button from "../../../components/CustomButtons/Button";
 const pageLabels = {
   professionFilter: "분야",
   contestCreateButtonLabel: "대회 생성 하기",
+  ascending: "오름차순",
+  dscending: "내림차순",
 };
 
 const styled = {
@@ -61,29 +64,48 @@ export default function CompetitionSearchPage({ data, maxPage, profession }) {
   const router = useRouter();
   const [currentProfession, setProfession] = useState(undefined);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sort, setSort] = useState("desc");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setCurrentPage(router.query.page, setLoading(false));
   }, []);
   useEffect(() => {
-    if (currentProfession !== undefined) {
-      router.push(
-        `/contest/${currentPage}?currentProfession=${currentProfession}`
-      );
-    } else {
-      router.push(`/contest/${currentPage}`);
-    }
+    router.push(
+      `/contest/${currentPage}?${
+        router.query.currentProfession !== undefined
+          ? `&currentProfession=${router.query.currentProfession}`
+          : ""
+      }${router.query.tag !== undefined ? `&tag=${router.query.tag}` : ""}
+      ${router.query.sort !== undefined ? `&sort=${router.query.sort}` : ""}`
+    );
   }, [currentPage]);
 
   useEffect(() => {
     if (currentProfession !== undefined) {
-      router.push(`/contest/1?currentProfession=${currentProfession}`);
+      router.push(`/contest/1?currentProfession=${currentProfession}${
+        router.query.tag !== undefined ? `&tag=${router.query.tag}` : ""
+      }
+      ${router.query.sort !== undefined ? `&sort=${router.query.sort}` : ""}`);
     }
   }, [currentProfession]);
 
+  useEffect(() => {
+    if (sort !== undefined) {
+      router.push(`/contest/1?${
+        router.query.currentProfession !== undefined
+          ? `&currentProfession=${router.query.currentProfession}`
+          : ""
+      }${router.query.tag !== undefined ? `&tag=${router.query.tag}` : ""}
+      ${sort !== undefined ? `&sort=${sort}` : ""}`);
+    }
+  }, [sort]);
+
   const handlecontestCreate = () => {
     router.push(`/contest/create`);
+  };
+  const handleSort = (sort) => {
+    setSort(sort === true ? "asc" : "desc");
   };
 
   const handelPageChange = (page) => {
@@ -118,6 +140,11 @@ export default function CompetitionSearchPage({ data, maxPage, profession }) {
               label={pageLabels.professionFilter}
               handleMenuClick={handleMenuClick}
             />
+            <FilterToggleItem
+              label={pageLabels.ascending}
+              clickLabel={pageLabels.dscending}
+              handleToggleClick={handleSort}
+            ></FilterToggleItem>
           </FilrerContainer>
         </GridItem>
         <GridContainer direction="row">
@@ -161,14 +188,16 @@ export default function CompetitionSearchPage({ data, maxPage, profession }) {
 }
 
 export async function getServerSideProps(context) {
-  const { page, currentProfession } = context.query;
+  const { page, currentProfession, tag, sort } = context.query;
 
   const data = await fetch(
     `${process.env.HOSTNAME}/api/article/Contest/${page}?take=${12}${
       currentProfession !== undefined
         ? `&currentProfession=${currentProfession}`
         : ""
-    }`,
+    }${tag !== undefined ? `&tag=${tag}` : ""}
+    ${sort !== undefined ? `&sort=${sort}` : ""}
+    `,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -176,12 +205,15 @@ export async function getServerSideProps(context) {
   ).then(async (response) => {
     return await response.json();
   });
+
   const maxPage = await fetch(
     `${process.env.HOSTNAME}/api/article/Contest?${
       currentProfession !== undefined
         ? `&currentProfession=${currentProfession}`
         : ""
-    }`,
+    }${tag !== undefined ? `&tag=${tag}` : ""}
+    ${sort !== undefined ? `&sort=${sort}` : ""}
+    `,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -189,6 +221,7 @@ export async function getServerSideProps(context) {
   ).then(async (response) => {
     return await response.json();
   });
+
   const profession = await fetch(
     `${process.env.HOSTNAME}/api/tags/profession`,
     {

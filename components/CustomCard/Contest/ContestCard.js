@@ -1,14 +1,13 @@
 import React, { Fragment, useEffect, useState } from "react";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
+import Typography from "@material-ui/core/Typography";
 import { CardActionArea } from "@mui/material";
 import TagContainer from "../../Tags/TagsContainer";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box } from "@mui/system";
 import { CssBaseline } from "@mui/material";
 import Link from "next/link";
-import DateProgress from "../../Progress/DateProgress";
 import Card from "../../Card/Card";
 import CardBody from "../../Card/CardBody";
 import CardFooter from "../../Card/CardFooter";
@@ -19,6 +18,11 @@ import GridItem from "../../Grid/GridItem";
 import Treasure from "../../../svg/contest/treasure.svg";
 import Parser from "html-react-parser";
 import moment from "moment";
+
+import CommonTag from "../../Tags/commonTag/CommonTag";
+import TagRoot from "../../Tags/TagRoot";
+import { useRouter } from "next/router";
+
 const pageLabels = {
   contestBodyLabel: "개요",
   techStackLabel: "기술 스택",
@@ -88,6 +92,7 @@ const styles = {
 const useStyles = makeStyles(styles);
 
 const ContestCard = (props) => {
+  const router = useRouter();
   const classes = useStyles();
 
   const { contestID, className } = props;
@@ -105,7 +110,7 @@ const ContestCard = (props) => {
     ).then(async (response) => {
       return await response.json();
     });
-   
+
     setContest(data);
   };
 
@@ -114,16 +119,21 @@ const ContestCard = (props) => {
       setLoading(false);
     });
   }, []);
+  const reqTag = (tagName) => {
+    if (tagName !== undefined) {
+      router.push(`/contest/1?tag=${tagName}`);
+    }
+  };
   if (loading) return <Fragment>Loading...</Fragment>;
   return (
     <Fragment>
       <CssBaseline />
       <Card className={classes.card + " " + className}>
-        <Link
-          href={`${process.env.HOSTNAME}/contest/Read/${contest.id}`}
-          passHref
-        >
-          <CardHeader>
+        <CardHeader>
+          <Link
+            href={`${process.env.HOSTNAME}/contest/Read/${contest.id}`}
+            passHref
+          >
             <CardActionArea>
               <img
                 src={
@@ -135,30 +145,36 @@ const ContestCard = (props) => {
                 className={classes.image}
               />
             </CardActionArea>
-            <GridContainer direction="row" className={classes.cardHeader}>
-              <GridItem xs={3} sm={3} md={3}>
-                <ProfessionsLabel data={contest.contest.profession} />
-              </GridItem>
-              <GridItem xs={8} sm={8} md={8}>
-                <Box>
-                  <p className={classes.title}>
+          </Link>
+          <GridContainer direction="row" className={classes.cardHeader}>
+            <GridItem xs={3} sm={3} md={3}>
+              <ProfessionsLabel data={contest.contest.profession} />
+            </GridItem>
+            <GridItem xs={8} sm={8} md={8}>
+              <Box>
+                <Link
+                  href={`${process.env.HOSTNAME}/contest/Read/${contest.id}`}
+                  passHref
+                >
+                  <Typography className={classes.title}>
                     {contest.article.content.title}
-                  </p>
-                  <p>
-                    {moment(contest.contest.start_period).format("YYYY.MM.DD")}~
-                    {moment(contest.contest.end_period).format("YYYY.MM.DD")}
-                  </p>
-                </Box>
-              </GridItem>
-              <TagContainer
-                className={classes.tags}
-                tags={contest.contest.Tag}
-                type="Tag"
-                form="textOnly"
-              />
-            </GridContainer>
-          </CardHeader>
-        </Link>
+                  </Typography>
+                </Link>
+                <p>
+                  {moment(contest.contest.start_period).format("YYYY.MM.DD")}~
+                  {moment(contest.contest.end_period).format("YYYY.MM.DD")}
+                </p>
+              </Box>
+            </GridItem>
+            <TagRoot>
+              {contest.contest.Tag.map((tag) => {
+                return <CommonTag name={tag.name} handle={reqTag}></CommonTag>;
+              })}
+            </TagRoot>
+          </GridContainer>
+          {/* contest.contest.Tag */}
+        </CardHeader>
+
         <CardBody className={classes.cardBody}>
           <CardContent className={classes.cardBody}>
             <Box className={classes.subTitle}>

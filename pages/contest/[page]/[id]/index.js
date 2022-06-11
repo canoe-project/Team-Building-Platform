@@ -1,4 +1,4 @@
-import * as React from "react";
+import { Fragment, useEffect, useState, useReducer } from "react";
 
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -13,7 +13,7 @@ import Button from "../../../../components/CustomButtons/Button";
 //contest section
 import ContestOverview from "../../../../pages-sections/contest/tabSections/SectionOverview";
 import ContestHeaderImage from "../../../../pages-sections/contest/tabSections/SectionHeaderImage";
-import ContestPublishedTab from "../../../../pages-sections/contest/tabSections/SectionPublishedTab";
+import ContestPublished from "../../../../pages-sections/contest/tabSections/SectionPublished";
 //team section
 import TeamList from "../../../../pages-sections/team/teamSections/SectionTeamList";
 //svg
@@ -48,15 +48,15 @@ const a11yProps = (index) => {
 };
 
 const BasicTabs = ({ data }) => {
-  const [value, setValue] = React.useState(0);
-  const [editing, setEditing] = React.useState(false);
-  const [loading, setLoading] = React.useState(true);
+  const [value, setValue] = useState(0);
+  const [editing, setEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
   const classes = useStyles(styles);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setLoading(false);
   }, []);
   const handleEditing = () => {
@@ -86,7 +86,7 @@ const BasicTabs = ({ data }) => {
       </GridContainer>
       <TabPanel value={value} index={0}>
         {editing ? (
-          <ContestPublishedTab
+          <ContestPublished
             articleValue={{ ...data.article }}
             contestValue={{ ...data.contest }}
             handleEditing={handleEditing}
