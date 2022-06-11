@@ -97,7 +97,7 @@ const teamReducer = (prevState, action) => {
   }
 };
 
-const postTeamArticle = async (article, team, id) => {
+const postTeamArticle = async (owner, article, team, id) => {
   const contestId = await fetch(
     `${process.env.HOSTNAME}/api/article/Contest/read/${id}/articleTo`,
     {
@@ -107,7 +107,7 @@ const postTeamArticle = async (article, team, id) => {
   ).then((response) => {
     return response.json();
   });
-
+  console.log(contestId);
   const body = await {
     article: {
       create: {
@@ -128,7 +128,7 @@ const postTeamArticle = async (article, team, id) => {
         name: team.name,
         citizens: {
           connect: {
-            user_id: team.citizens,
+            user_id: owner,
           },
         },
         ...(team.role[0] !== undefined && {
@@ -151,15 +151,16 @@ const postTeamArticle = async (article, team, id) => {
     },
     contest: {
       connect: {
-        id: contestId.contest.id,
+        id: contestId.contest_id,
       },
     },
     citizens: {
       connect: {
-        user_id: team.citizens,
+        user_id: owner,
       },
     },
   };
+  console.log(body);
   const data = await fetch(
     `${process.env.HOSTNAME}/api/article/Team/Post/${id}`,
     {
@@ -170,6 +171,7 @@ const postTeamArticle = async (article, team, id) => {
   ).then((response) => {
     return response.json();
   });
+  console.log(data);
 };
 
 const useStyles = makeStyles(styles);
@@ -301,8 +303,10 @@ const CreateTeam = ({ data }) => {
       <IconButton
         className={classes.createButton}
         onClickCapture={async () => {
-          handleTeamCitizens(session.user.id);
-          postTeamArticle(article, team, router.query.id);
+          postTeamArticle(session.user.id, article, team, router.query.id);
+          router.push(
+            `${process.env.HOSTNAME}/contest/Read/${router.query.id}`
+          );
         }}
       >
         <SaveAltIcon
