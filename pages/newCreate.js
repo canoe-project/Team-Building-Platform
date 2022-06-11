@@ -215,7 +215,6 @@ const reqUpdate = async (id, article, contest, techStack, professtion, tag) => {
   ).then((response) => {
     return response.json();
   });
-  console.log(data);
 };
 
 const customStyles = makeStyles(styles);

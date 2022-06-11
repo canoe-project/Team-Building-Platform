@@ -62,7 +62,6 @@ const RoleCard = ({ data, handle }) => {
     setLoading(false);
   }, []);
   useEffect(() => {
-    console.log(data._source);
   }, [data._source]);
   if (loading) return <Fragment>Loading...</Fragment>;
   return (

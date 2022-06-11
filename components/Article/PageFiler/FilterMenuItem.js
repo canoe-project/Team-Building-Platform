@@ -44,6 +44,7 @@ const FilterItem = ({ items = [], label, handleMenuClick }) => {
       <Chip
         label={label === undefined ? "" : label}
         onClick={handleClick}
+        variant="outlined"
       ></Chip>
       <Menu
         className={classes.menu}

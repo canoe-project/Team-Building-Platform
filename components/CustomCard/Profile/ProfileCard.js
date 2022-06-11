@@ -63,10 +63,6 @@ const ContestCard = (props) => {
     setLoading(false);
   }, []);
 
-  useEffect(() => {
-    console.log(props);
-  }, []);
-
   const photosize = 200;
 
   let userContestProfessionData = {

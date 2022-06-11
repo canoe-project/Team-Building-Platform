@@ -50,13 +50,11 @@ export default function MainPage() {
     ]);
 
     reqCompetition(index, "A", 0).then((data) => {
-      console.log(data);
       setCompetition(data);
       setLoading(false);
     });
   }, []);
   useEffect(() => {
-    console.log(competitionRank);
   }, [competitionRank]);
   const handleRank = (data) => {
     setCompetitionRank(data);

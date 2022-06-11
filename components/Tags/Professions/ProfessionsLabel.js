@@ -44,7 +44,6 @@ const ProfessionsLabel = ({ data, children }) => {
   }, []);
   useEffect(() => {
     if (data !== undefined) {
-      console.log(data[0]);
       setProfessions(data[0]);
     }
   }, [data]);

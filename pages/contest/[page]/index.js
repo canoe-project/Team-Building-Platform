@@ -23,8 +23,10 @@ import Button from "../../../components/CustomButtons/Button";
 const pageLabels = {
   professionFilter: "분야",
   contestCreateButtonLabel: "대회 생성 하기",
-  ascending: "오름차순",
-  dscending: "내림차순",
+  ascending: "최신순",
+  dscending: "과거순",
+  highPrice: "높은 가격순",
+  LowPrice: "낮은 가격순",
 };
 
 const styled = {
@@ -55,6 +57,9 @@ const styled = {
     width: "2.5rem",
     height: "2.5rem",
   },
+  filterGridItem: {
+    flexDirection: "row-reverse",
+  },
 };
 
 const useStyles = makeStyles(styled);
@@ -64,29 +69,37 @@ export default function CompetitionSearchPage({ data, maxPage, profession }) {
   const router = useRouter();
   const [currentProfession, setProfession] = useState(undefined);
   const [currentPage, setCurrentPage] = useState(1);
-  const [sort, setSort] = useState("desc");
+  const [sort, setSort] = useState(undefined);
+  const [prize, setPrize] = useState(undefined);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setCurrentPage(router.query.page, setLoading(false));
   }, []);
+
   useEffect(() => {
     router.push(
-      `/contest/${currentPage}?${
+      `/contest/${currentPage}?
+      ${
         router.query.currentProfession !== undefined
           ? `&currentProfession=${router.query.currentProfession}`
           : ""
-      }${router.query.tag !== undefined ? `&tag=${router.query.tag}` : ""}
-      ${router.query.sort !== undefined ? `&sort=${router.query.sort}` : ""}`
+      }
+      ${router.query.tag !== undefined ? `&tag=${router.query.tag}` : ""}
+      ${router.query.sort !== undefined ? `&sort=${router.query.sort}` : ""}
+      ${router.query.prize !== undefined ? `&prize=${router.query.prize}` : ""}`
     );
   }, [currentPage]);
 
   useEffect(() => {
     if (currentProfession !== undefined) {
-      router.push(`/contest/1?currentProfession=${currentProfession}${
-        router.query.tag !== undefined ? `&tag=${router.query.tag}` : ""
-      }
-      ${router.query.sort !== undefined ? `&sort=${router.query.sort}` : ""}`);
+      router.push(`/contest/1?currentProfession=
+      ${currentProfession}
+      ${router.query.tag !== undefined ? `&tag=${router.query.tag}` : ""}
+      ${router.query.sort !== undefined ? `&sort=${router.query.sort}` : ""}
+      ${
+        router.query.prize !== undefined ? `&prize=${router.query.prize}` : ""
+      }`);
     }
   }, [currentProfession]);
 
@@ -95,17 +108,34 @@ export default function CompetitionSearchPage({ data, maxPage, profession }) {
       router.push(`/contest/1?${
         router.query.currentProfession !== undefined
           ? `&currentProfession=${router.query.currentProfession}`
-          : ""
-      }${router.query.tag !== undefined ? `&tag=${router.query.tag}` : ""}
-      ${sort !== undefined ? `&sort=${sort}` : ""}`);
+          : ``
+      }${router.query.tag !== undefined ? `&tag=${router.query.tag}` : ``}
+      ${sort !== undefined ? `&sort=${sort}` : ``}
+      ${
+        router.query.prize !== undefined ? `&prize=${router.query.prize}` : ``
+      }`);
     }
   }, [sort]);
+  useEffect(() => {
+    router.push(`/contest/1?${
+      router.query.currentProfession !== undefined
+        ? `&currentProfession=${router.query.currentProfession}`
+        : ``
+    }${router.query.tag !== undefined ? `&tag=${router.query.tag}` : ``}
+      ${router.query.sort !== undefined ? `&sort=${router.query.sort}` : ``}
+      ${prize !== undefined ? `&prize=${prize}` : ``}`);
+  }, [prize]);
 
   const handlecontestCreate = () => {
     router.push(`/contest/create`);
   };
-  const handleSort = (sort) => {
-    setSort(sort === true ? "asc" : "desc");
+  const handleSort = (data) => {
+    setSort(data === true ? "asc" : "desc");
+  };
+
+  const handlePrize = (data) => {
+    setPrize(data === true ? "desc" : undefined);
+    console.log(prize);
   };
 
   const handelPageChange = (page) => {
@@ -133,7 +163,7 @@ export default function CompetitionSearchPage({ data, maxPage, profession }) {
             </CardFooter>
           </Card>
         </GridItem>
-        <GridItem xs={12} sm={12} md={12}>
+        <GridItem xs={12} sm={12} md={12} className={classes.filterGridItem}>
           <FilrerContainer>
             <FilterMenuItem
               items={profession}
@@ -144,6 +174,11 @@ export default function CompetitionSearchPage({ data, maxPage, profession }) {
               label={pageLabels.ascending}
               clickLabel={pageLabels.dscending}
               handleToggleClick={handleSort}
+            ></FilterToggleItem>
+            <FilterToggleItem
+              label={pageLabels.highPrice}
+              clickLabel={pageLabels.highPrice}
+              handleToggleClick={handlePrize}
             ></FilterToggleItem>
           </FilrerContainer>
         </GridItem>
@@ -188,7 +223,7 @@ export default function CompetitionSearchPage({ data, maxPage, profession }) {
 }
 
 export async function getServerSideProps(context) {
-  const { page, currentProfession, tag, sort } = context.query;
+  const { page, currentProfession, tag, sort, prize } = context.query;
 
   const data = await fetch(
     `${process.env.HOSTNAME}/api/article/Contest/${page}?take=${12}${
@@ -197,6 +232,7 @@ export async function getServerSideProps(context) {
         : ""
     }${tag !== undefined ? `&tag=${tag}` : ""}
     ${sort !== undefined ? `&sort=${sort}` : ""}
+    ${prize !== undefined ? `&prize=${prize}` : ""}
     `,
     {
       method: "GET",
@@ -213,6 +249,7 @@ export async function getServerSideProps(context) {
         : ""
     }${tag !== undefined ? `&tag=${tag}` : ""}
     ${sort !== undefined ? `&sort=${sort}` : ""}
+    ${prize !== undefined ? `&prize=${prize}` : ""}
     `,
     {
       method: "GET",
