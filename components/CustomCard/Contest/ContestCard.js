@@ -110,7 +110,7 @@ const ContestCard = (props) => {
     ).then(async (response) => {
       return await response.json();
     });
-
+    console.log(data);
     setContest(data);
   };
 
@@ -131,7 +131,7 @@ const ContestCard = (props) => {
       <Card className={classes.card + " " + className}>
         <CardHeader>
           <Link
-            href={`${process.env.HOSTNAME}/contest/Read/${contest.id}`}
+            href={`${process.env.HOSTNAME}/contest/Read/${contest.article_id}`}
             passHref
           >
             <CardActionArea>
@@ -153,7 +153,7 @@ const ContestCard = (props) => {
             <GridItem xs={8} sm={8} md={8}>
               <Box>
                 <Link
-                  href={`${process.env.HOSTNAME}/contest/Read/${contest.id}`}
+                  href={`${process.env.HOSTNAME}/contest/Read/${contest.article_id}`}
                   passHref
                 >
                   <Typography className={classes.title}>

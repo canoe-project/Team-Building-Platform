@@ -70,7 +70,7 @@ const BasicTabs = ({ data }) => {
         <GridItem>
           <ContestHeaderImage
             editing={editing}
-            contestImage={data.constest_image_url}
+            contestImage={data?.constest_image_url}
           />
         </GridItem>
         <GridItem>
