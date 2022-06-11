@@ -13,11 +13,12 @@ import { useRouter } from "next/router";
 import FilrerContainer from "../../../components/Article/PageFiler/FilerContain";
 import FilterMenuItem from "../../../components/Article/PageFiler/FilterMenuItem";
 import FilterToggleItem from "../../../components/Article/PageFiler/FilterToggleItem";
-import { IconButton } from "@material-ui/core";
+import { IconButton, Typography } from "@material-ui/core";
 import AddIcon from "@mui/icons-material/Add";
 import palettes from "../../../styles/nextjs-material-kit/palettes";
 // import FilterToggleItem from "../../../components/Article/PageFiler/FilterToggleItem";
-
+import TagRoot from "../../../components/Tags/TagRoot";
+import CommonTag from "../../../components/Tags/commonTag/CommonTag";
 import Button from "../../../components/CustomButtons/Button";
 
 const pageLabels = {
@@ -26,7 +27,10 @@ const pageLabels = {
   ascending: "최신순",
   dscending: "과거순",
   highPrice: "높은 가격순",
-  LowPrice: "낮은 가격순",
+  lowPrice: "낮은 가격순",
+  topTag: "인기 태그",
+  headCopy: "headCopy",
+  subCopy: "subCopy",
 };
 
 const styled = {
@@ -37,6 +41,9 @@ const styled = {
   },
   createCard: {
     height: "20rem",
+  },
+  headerCardFooter: {
+    marginTop: "auto",
   },
   createCardButton: {
     right: "1rem",
@@ -64,7 +71,12 @@ const styled = {
 
 const useStyles = makeStyles(styled);
 
-export default function CompetitionSearchPage({ data, maxPage, profession }) {
+export default function CompetitionSearchPage({
+  data,
+  maxPage,
+  profession,
+  topTag,
+}) {
   const classes = useStyles(useStyles);
   const router = useRouter();
   const [currentProfession, setProfession] = useState(undefined);
@@ -145,12 +157,23 @@ export default function CompetitionSearchPage({ data, maxPage, profession }) {
   const handleMenuClick = (profession) => {
     setProfession(profession);
   };
+  const reqTag = (tagName) => {
+    if (tagName !== undefined) {
+      router.push(`/contest/1?tag=${tagName}`);
+    }
+  };
   if (loading) return <div>Loading</div>;
   return (
     <MainLayout>
       <GridContainer direction="column">
         <GridItem xs={12} sm={12} md={12}>
           <Card className={classes.createCard}>
+            <CardHeader>
+              <Typography>{pageLabels.headCopy}</Typography>
+            </CardHeader>
+            <CardBody>
+              <Typography>{pageLabels.subCopy}</Typography>
+            </CardBody>
             <CardFooter>
               <Button
                 className={classes.createCardButton}
@@ -161,6 +184,14 @@ export default function CompetitionSearchPage({ data, maxPage, profession }) {
                 {pageLabels.contestCreateButtonLabel}
               </Button>
             </CardFooter>
+            <Typography className={classes.headerCardFooter}>
+              {pageLabels.topTag}
+            </Typography>
+            <TagRoot>
+              {topTag.map((tag) => {
+                return <CommonTag name={tag.name} handle={reqTag}></CommonTag>;
+              })}
+            </TagRoot>
           </Card>
         </GridItem>
         <GridItem xs={12} sm={12} md={12} className={classes.filterGridItem}>
@@ -269,5 +300,12 @@ export async function getServerSideProps(context) {
     return await response.json();
   });
 
-  return { props: { data, maxPage, profession } };
+  const topTag = await fetch(`${process.env.HOSTNAME}/api/tags/contestTopTag`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  }).then(async (response) => {
+    return await response.json();
+  });
+
+  return { props: { data, maxPage, profession, topTag } };
 }
