@@ -19,6 +19,7 @@ import palettes from "../../../../styles/nextjs-material-kit/palettes";
 import createInvite from "../../../../components/StreamChat/CreateInvite";
 import { getSession, useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
+import { Typography } from "@material-ui/core";
 const styles = {
   title: {
     alignItems: "center",
@@ -111,6 +112,7 @@ const pageLabels = {
   roleLabel: "모집 분야",
   participantsLabel: "참여자",
   joinButton: "신청",
+  teamContent: "개요",
 };
 
 const useStyles = makeStyles(styles);
@@ -194,6 +196,9 @@ const Overview = ({ data }) => {
         </GridItem>
         <GridItem>
           <Card className={classes.card}>
+            <Typography className={classes.subTitle}>
+              {pageLabels.teamContent}
+            </Typography>
             <Box className={classes.body}>
               {Parser(data.article.content.body)}
             </Box>

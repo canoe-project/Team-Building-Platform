@@ -91,51 +91,81 @@ export default function CompetitionSearchPage({
 
   useEffect(() => {
     router.push(
-      `/contest/${currentPage}?
-      ${
-        router.query.currentProfession !== undefined
-          ? `&currentProfession=${router.query.currentProfession}`
-          : ""
-      }
-      ${router.query.tag !== undefined ? `&tag=${router.query.tag}` : ""}
-      ${router.query.sort !== undefined ? `&sort=${router.query.sort}` : ""}
-      ${router.query.prize !== undefined ? `&prize=${router.query.prize}` : ""}`
+      `/contest/${currentPage}?` +
+        `${
+          router.query.currentProfession !== undefined
+            ? `&currentProfession=${router.query.currentProfession}`
+            : ""
+        }` +
+        `${router.query.tag !== undefined ? `&tag=${router.query.tag}` : ""}` +
+        `${
+          router.query.sort !== undefined ? `&sort=${router.query.sort}` : ""
+        }` +
+        ` ${
+          router.query.prize !== undefined ? `&prize=${router.query.prize}` : ""
+        }`
     );
   }, [currentPage]);
 
   useEffect(() => {
     if (currentProfession !== undefined) {
-      router.push(`/contest/1?currentProfession=
-      ${currentProfession}
-      ${router.query.tag !== undefined ? `&tag=${router.query.tag}` : ""}
-      ${router.query.sort !== undefined ? `&sort=${router.query.sort}` : ""}
-      ${
-        router.query.prize !== undefined ? `&prize=${router.query.prize}` : ""
-      }`);
+      router.push(
+        `/contest/1?` +
+          `${
+            currentProfession !== undefined
+              ? `&currentProfession=${currentProfession}`
+              : ""
+          }` +
+          `${
+            router.query.tag !== undefined ? `&tag=${router.query.tag}` : ""
+          }` +
+          `${
+            router.query.sort !== undefined ? `&sort=${router.query.sort}` : ""
+          }` +
+          `${
+            router.query.prize !== undefined
+              ? `&prize=${router.query.prize}`
+              : ""
+          }`
+      );
     }
   }, [currentProfession]);
 
   useEffect(() => {
     if (sort !== undefined) {
-      router.push(`/contest/1?${
-        router.query.currentProfession !== undefined
-          ? `&currentProfession=${router.query.currentProfession}`
-          : ``
-      }${router.query.tag !== undefined ? `&tag=${router.query.tag}` : ``}
-      ${sort !== undefined ? `&sort=${sort}` : ``}
-      ${
-        router.query.prize !== undefined ? `&prize=${router.query.prize}` : ``
-      }`);
+      router.push(
+        `/contest/1?` +
+          `${
+            router.query.currentProfession !== undefined
+              ? `&currentProfession=${router.query.currentProfession}`
+              : ""
+          }` +
+          `${
+            router.query.tag !== undefined ? `&tag=${router.query.tag}` : ""
+          }` +
+          `${sort !== undefined ? `&sort=${sort}` : ""}` +
+          `${
+            router.query.prize !== undefined
+              ? `&prize=${router.query.prize}`
+              : ""
+          }`
+      );
     }
   }, [sort]);
   useEffect(() => {
-    router.push(`/contest/1?${
-      router.query.currentProfession !== undefined
-        ? `&currentProfession=${router.query.currentProfession}`
-        : ``
-    }${router.query.tag !== undefined ? `&tag=${router.query.tag}` : ``}
-      ${router.query.sort !== undefined ? `&sort=${router.query.sort}` : ``}
-      ${prize !== undefined ? `&prize=${prize}` : ``}`);
+    router.push(
+      `/contest/1?` +
+        `${
+          router.query.currentProfession !== undefined
+            ? `&currentProfession=${router.query.currentProfession}`
+            : ""
+        }` +
+        `${router.query.tag !== undefined ? `&tag=${router.query.tag}` : ""}` +
+        `${
+          router.query.sort !== undefined ? `&sort=${router.query.sort}` : ""
+        }` +
+        `${prize !== undefined ? `&prize=${prize}` : ""}`
+    );
   }, [prize]);
 
   const handlecontestCreate = () => {
@@ -257,14 +287,15 @@ export async function getServerSideProps(context) {
   const { page, currentProfession, tag, sort, prize } = context.query;
 
   const data = await fetch(
-    `${process.env.HOSTNAME}/api/article/Contest/${page}?take=${12}${
-      currentProfession !== undefined
-        ? `&currentProfession=${currentProfession}`
-        : ""
-    }${tag !== undefined ? `&tag=${tag}` : ""}
-    ${sort !== undefined ? `&sort=${sort}` : ""}
-    ${prize !== undefined ? `&prize=${prize}` : ""}
-    `,
+    `${process.env.HOSTNAME}/api/article/Contest/${page}?take=${12}` +
+      `${
+        currentProfession !== undefined
+          ? `&currentProfession=${currentProfession}`
+          : ""
+      }` +
+      `${tag !== undefined ? `&tag=${tag}` : ""}` +
+      `${sort !== undefined ? `&sort=${sort}` : ""}` +
+      `${prize !== undefined ? `&prize=${prize}` : ""}`,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -277,10 +308,10 @@ export async function getServerSideProps(context) {
     `${process.env.HOSTNAME}/api/article/Contest?${
       currentProfession !== undefined
         ? `&currentProfession=${currentProfession}`
-        : ""
-    }${tag !== undefined ? `&tag=${tag}` : ""}
-    ${sort !== undefined ? `&sort=${sort}` : ""}
-    ${prize !== undefined ? `&prize=${prize}` : ""}
+        : {}
+    }${tag !== undefined ? `&tag=${tag}` : {}}
+    ${sort !== undefined ? `&sort=${sort}` : {}}
+    ${prize !== undefined ? `&prize=${prize}` : {}}
     `,
     {
       method: "GET",

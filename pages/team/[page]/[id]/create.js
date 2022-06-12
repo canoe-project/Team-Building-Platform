@@ -26,6 +26,8 @@ const pageLabels = {
   participantsLabel: "참여자",
   joinButton: "신청",
   placeholder: "제목 입력",
+  teamContent: "개요",
+  roleLabel: "모집 분야",
 };
 
 const articleOtion = {
@@ -242,13 +244,17 @@ const CreateTeam = ({ data }) => {
         </GridItem>
         <GridItem>
           <Card className={classes.card}>
+            <Typography className={classes.subTitle}>
+              {pageLabels.teamContent}
+            </Typography>
             <Editor
               className={classes.body}
               onChangeHandle={handleContentBody}
             ></Editor>
           </Card>
         </GridItem>
-        <GridItem className={classes.subTitle}></GridItem>
+
+        <GridItem className={classes.subTitle}>{pageLabels.roleLabel}</GridItem>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <GridContainer direction="row">
