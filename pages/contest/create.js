@@ -25,6 +25,11 @@ import moment from "moment";
 import { getSession, useSession, signIn, signOut } from "next-auth/react";
 import SectionHeaderImage from "../../pages-sections/headerImage/SectionHeaderImage";
 
+import CommonTag from "../../components/Tags/CommonTag/CommonTag";
+import TagRoot from "../../components/Tags/TagRoot";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import TagItem from "../../components/Tags/Searcher/SearcherItem/TagItem";
+
 const pageLabels = {
   edittingButton: "수정",
   deleteButton: "삭제",
@@ -172,18 +177,11 @@ const reqUpdate = async (
         end_period: contest.end_period,
         start_period: contest.start_period,
         createAt: contest.createAt,
-        ...(contest.Tag[0] !== undefined && {
+        ...(tag[0] !== undefined && {
           Tag: {
-            connectOrCreate: contest.Tag.map((t) => {
+            connect: tag.map((t) => {
               return {
-                where: {
-                  name: t.name,
-                },
-                create: {
-                  name: t.name,
-                  description: "",
-                  tag_color: "",
-                },
+                name: t.name,
               };
             }),
           },
@@ -239,6 +237,7 @@ const Overview = () => {
   const [contest, contestDispatch] = useReducer(contestReducer, contestOption);
   const [imageURL, setImageURL] = useState(null);
 
+  const [selectTag, setSelectTag] = useState([]);
   const [selectTechStack, setTechStack] = useState([]);
   const [selectProfesstion, setProfesstion] = useState([
     {
@@ -266,10 +265,14 @@ const Overview = () => {
     );
     setProfesstion([data]);
   };
-
-  useEffect(() => {
-    setLoading(false);
-  }, []);
+  const handleTag = (data) => {
+    const newTag = selectTag.filter((tag) => tag.name !== data.name);
+    setSelectTag([...newTag, data]);
+  };
+  const handleTagDelete = (name) => {
+    const newTag = selectTag.filter((tag) => tag.name !== name);
+    setSelectTag([...newTag]);
+  };
 
   const handleArticleTitleChange = (data) => {
     articleDispatch({ type: "contentTitle", result: data.target.value });
@@ -292,12 +295,6 @@ const Overview = () => {
   const handlePrize = (data) => {
     contestDispatch({ type: "contestPrize", result: data.target.value });
   };
-  // const handleProfession = async (data) => {
-  //   contestDispatch({ type: "contestProfession", result: data });
-  // };
-  // const handleTagAppender = (data) => {
-  //   contestDispatch({ type: "contestTag", result: data.target.value });
-  // };
 
   const handle = (url) => {
     setImageURL(url);
@@ -309,8 +306,8 @@ const Overview = () => {
       contest,
       selectTechStack,
       selectProfesstion,
-      imageURL
-      // tag
+      imageURL,
+      selectTag
     );
     // router.push(`/contest/`);
   };
@@ -352,11 +349,27 @@ const Overview = () => {
                   <Typography>{moment().format("YYYY.MM.DD")}</Typography>
                 </GridItem>
                 <GridItem>
-                  {/* <TagsContainer
-                  tags={contest.Tag}
-                  type={"Tag"}
-                  form={"textOnly"}
-                /> */}
+                  <TagRoot>
+                    {selectTag.map((tag) => {
+                      return (
+                        <CommonTag
+                          name={tag.name}
+                          icon={CloseRoundedIcon}
+                          handleDelete={handleTagDelete}
+                        ></CommonTag>
+                      );
+                    })}
+                    <Searcher
+                      index={"tag_index"}
+                      filed={["name", "description", "type"]}
+                      basicQuery={"tag"}
+                      size={12}
+                      direction={"column"}
+                      handle={handleTag}
+                    >
+                      <TagItem />
+                    </Searcher>
+                  </TagRoot>
                 </GridItem>
               </GridContainer>
             </GridItem>

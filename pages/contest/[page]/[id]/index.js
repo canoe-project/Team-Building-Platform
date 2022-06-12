@@ -89,6 +89,7 @@ const BasicTabs = ({ data }) => {
           <ContestPublished
             articleValue={{ ...data.article }}
             contestValue={{ ...data.contest }}
+            imageURLValue={data.constest_image_url}
             handleEditing={handleEditing}
           />
         ) : (

@@ -17,11 +17,24 @@ const TagRequest = async (type, name) => {
   return data;
 };
 
-const styles = {};
+const styles = {
+  root: {
+    margin: "1rem",
+  },
+};
 
 const useStyles = makeStyles(styles);
 
-const CommonTag = ({ description, image_url, name, type, color, handle }) => {
+const CommonTag = ({
+  description,
+  image_url,
+  name,
+  type,
+  color,
+  handle,
+  icon,
+  handleDelete,
+}) => {
   const classes = useStyles();
 
   const [loading, setLoading] = useState(true);
@@ -40,19 +53,29 @@ const CommonTag = ({ description, image_url, name, type, color, handle }) => {
 
   if (loading) return <div>Loading...</div>;
   return (
-    <Button
-      className={classes.root}
-      onClickCapture={() => {
-        if (handle !== undefined) {
-          handle(name);
-        }
-      }}
-    >
+    <Box className={classes.root}>
       <Chip
         label={name === null || name === undefined ? "" : name}
         variant="outlined"
+        {...(icon === undefined
+          ? {}
+          : {
+              deleteIcon: { icon },
+              onDelete: () => {
+                handleDelete(name);
+              },
+            })}
+        {...(handle === undefined
+          ? {}
+          : {
+              onClickCapture: () => {
+                if (handle !== undefined) {
+                  handle(name);
+                }
+              },
+            })}
       />
-    </Button>
+    </Box>
   );
 };
 

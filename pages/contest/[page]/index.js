@@ -26,7 +26,7 @@ const pageLabels = {
   contestCreateButtonLabel: "대회 생성 하기",
   ascending: "최신순",
   dscending: "과거순",
-  highPrice: "높은 가격순",
+  highPrice: "상금순",
   lowPrice: "낮은 가격순",
   topTag: "인기 태그",
   headCopy: "headCopy",

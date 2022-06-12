@@ -17,6 +17,10 @@ const pageLabels = {
 };
 
 const styles = {
+  box: {
+    display: "flex",
+    flexFlow: "column",
+  },
   iconButtonLabel: {
     display: "flex",
     flexDirection: "column",
@@ -38,11 +42,12 @@ const styles = {
     padding: "0.5rem",
   },
   deleteIcon: {
-    top: "0.25rem",
-    left: "5rem",
+    alignSelf: "self-end",
+    position: "absolute",
+    top: "0rem",
+    marginBttom: "90%",
     width: "0.5rem",
     height: "0.5rem",
-    margin: "0",
   },
   deleteButton: {
     width: "0.25rem",
@@ -66,7 +71,7 @@ const TechStackCard = ({ data, handle }) => {
 
   useEffect(() => {}, []);
   return (
-    <Box>
+    <Box className={classes.box}>
       <IconButton
         className={classes.deleteIcon}
         onClickCapture={(e) => {
@@ -89,7 +94,6 @@ const TechStackCard = ({ data, handle }) => {
           {data.name !== null ? data.name : ""}
         </p>
       </IconButton>
-
       <Modal
         title={data.name !== null ? data.name : ""}
         open={modalToggle}
