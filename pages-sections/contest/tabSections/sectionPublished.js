@@ -231,8 +231,6 @@ const reqUpdate = async (
   ).then((response) => {
     return response.json();
   });
-  console.log("init");
-  console.log(initData);
   const data = await fetch(
     `${process.env.HOSTNAME}/api/article/Contest/Put/${id}`,
     {
@@ -243,7 +241,6 @@ const reqUpdate = async (
   ).then((response) => {
     return response.json();
   });
-  console.log(data);
 };
 
 const customStyles = makeStyles(styles);

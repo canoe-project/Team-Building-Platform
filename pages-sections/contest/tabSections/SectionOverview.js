@@ -31,6 +31,8 @@ import SectionComments from "../../comment/SectionComments";
 import styles from "../../../styles/jss/nextjs-material-kit/pages/overview/contestOverview";
 import { Box } from "@mui/system";
 import { useRouter } from "next/router";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 
 const pageLabels = {
   edittingButton: "수정",
@@ -97,41 +99,17 @@ const Overview = ({ article, contest, professions, handleEditing }) => {
               </GridItem>
             </GridContainer>
           </GridItem>
-          <GridItem xs={1} sm={1} md={1}>
-            <IconButton className={classes.iconMenuIcon}>
-              <MoreVertOutlinedIcon
-                aria-controls={open ? "fade-menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? "true" : undefined}
-                onClick={handleClick}
-              />
-            </IconButton>
-            <Menu
-              className={classes.menu}
-              MenuListProps={{
-                "aria-labelledby": "fade-button",
+          <GridItem xs={1} sm={1} md={1} className={classes.edidorContainer}>
+            <IconButton
+              onClickCapture={() => {
+                handleEditing();
               }}
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              TransitionComponent={Fade}
             >
-              <MenuItem
-                onClick={() => {
-                  handleEditing();
-                  handleClose();
-                }}
-              >
-                {pageLabels.edittingButton}
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  handleClose();
-                }}
-              >
-                {pageLabels.deleteButton}
-              </MenuItem>
-            </Menu>
+              <EditRoundedIcon />
+            </IconButton>
+            <IconButton>
+              <DeleteRoundedIcon />
+            </IconButton>
           </GridItem>
           <GridItem>
             <GridContainer direction="row-reverse" justifyContent="flex-start">
@@ -232,11 +210,13 @@ const Overview = ({ article, contest, professions, handleEditing }) => {
         </GridContainer>
       </GridItem>
       <GridItem xs={12} sm={12} md={12}>
-        <Card className={classes.card}>
+        <Card className={classes.card + " " + classes.bodyCard}>
           <Typography className={classes.subTitle}>
             {pageLabels.content}
           </Typography>
-          <div className={classes.body}>{Parser(article.content.body)}</div>
+          <Typography className={classes.body}>
+            {Parser(article.content.body)}
+          </Typography>
         </Card>
       </GridItem>
       <GridItem>
