@@ -1,23 +1,12 @@
 import { useState, useEffect, useReducer } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, IconButton } from "@material-ui/core/";
-import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 //components
 import GridContainer from "../../../components/Grid/GridContainer";
 import GridItem from "../../../components/Grid/GridItem";
-import Button from "../../../components/CustomButtons/Button";
-import TagsContainer from "../../../components/Tags/TagsContainer";
-import CommonTag from "../../../components/Tags/commonTag/CommonTag";
+import CommonTag from "../../../components/Tags/CommonTag/CommonTag";
 import TagRoot from "../../../components/Tags/TagRoot";
 import Card from "../../../components/Card/Card";
-import CardBody from "../../../components/Card/CardBody";
-import CardFooter from "../../../components/Card/CardFooter";
-import CardHeader from "../../../components/Card/CardHeader";
-
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-
-import teamStyle from "../../../styles/jss/nextjs-material-kit/pages/landingPageSections/teamStyle.js";
 import ProfessionsLabel from "../../../components/Tags/Professions/ProfessionsLabel";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import GradeIcon from "@mui/icons-material/Grade";
@@ -33,6 +22,7 @@ import { Box } from "@mui/system";
 import { useRouter } from "next/router";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import ModalTag from "../../../components/Tags/ModalTag/ModalTag";
 
 const pageLabels = {
   edittingButton: "수정",
@@ -196,11 +186,18 @@ const Overview = ({ article, contest, professions, handleEditing }) => {
                       {pageLabels.contestTechStack}
                     </GridItem>
                     <GridItem className={classes.overviewBody}>
-                      <TagsContainer
-                        tags={contest.tech_stack}
-                        type="TechStack"
-                        form="iconOnly"
-                      ></TagsContainer>
+                      <TagRoot>
+                        {contest.tech_stack.map((stack, index) => {
+                          return (
+                            <ModalTag
+                              name={stack.name}
+                              image={stack.image_url}
+                              description={stack.description}
+                              key={index}
+                            ></ModalTag>
+                          );
+                        })}
+                      </TagRoot>
                     </GridItem>
                   </GridContainer>
                 </GridItem>

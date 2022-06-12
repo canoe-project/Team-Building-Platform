@@ -5,6 +5,8 @@ import { useState, useEffect, useReducer, Fragment } from "react";
 import { getSession, useSession, signIn, signOut } from "next-auth/react";
 import classNames from "classnames";
 import { makeStyles } from "@material-ui/core/styles";
+import { TextField } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 const reqCommentPost = async (articleID, comment, userId) => {
   const body = {
     comment: {
@@ -31,7 +33,15 @@ const reqCommentPost = async (articleID, comment, userId) => {
   });
   return data;
 };
-const styles = {};
+const styles = {
+  filed: {
+    width: "100%",
+    alignSelf: "center",
+  },
+  box: {
+    display: "flex",
+  },
+};
 
 const useStyles = makeStyles(styles);
 
@@ -46,13 +56,14 @@ const CommentInput = ({ className }) => {
   };
   useEffect(() => {}, [comment]);
   return (
-    <div className={className}>
-      <Editor
-        name={"commentInput"}
-        readOnly={false}
-        value={""}
-        onChangeHandle={onChangeHandle}
-      ></Editor>
+    <Box className={classes.box}>
+      <TextField
+        className={classes.filed}
+        onChangeCapture={(e) => {
+          onChangeHandle(e.target.value);
+        }}
+        fullWidth
+      ></TextField>
       <Button
         onClick={async () => {
           await reqCommentPost(router.query.id, comment, session.user.id).then(
@@ -64,7 +75,7 @@ const CommentInput = ({ className }) => {
       >
         버튼
       </Button>
-    </div>
+    </Box>
   );
 };
 
