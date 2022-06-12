@@ -221,7 +221,6 @@ const reqUpdate = async (
   ).then((response) => {
     return response.json();
   });
-  console.log(data);
 };
 
 const customStyles = makeStyles(styles);

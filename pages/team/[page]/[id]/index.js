@@ -194,7 +194,6 @@ const Overview = ({ data }) => {
     classes.imgFluid
   );
   useEffect(() => {
-    console.log(data);
     setLoading(false);
   }, []);
 
@@ -317,14 +316,13 @@ const Overview = ({ data }) => {
                           </GridItem>
                           <Button
                             className={classes.joinButton}
-                            onClick={(e) => {
-                              console.log(e);
-                              reqUpdateMembers(
+                            onClick={async (e) => {
+                              await reqUpdateMembers(
                                 session.user.id,
                                 role.id,
                                 router.query.id
                               );
-                              createInvite(
+                              await createInvite(
                                 data.citizens.user_id,
                                 data.citizens.user_id,
                                 data.id,

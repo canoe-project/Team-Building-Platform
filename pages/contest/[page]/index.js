@@ -177,7 +177,6 @@ export default function CompetitionSearchPage({
 
   const handlePrize = (data) => {
     setPrize(data === true ? "desc" : undefined);
-    console.log(prize);
   };
 
   const handelPageChange = (page) => {

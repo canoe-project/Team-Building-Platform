@@ -81,7 +81,6 @@ const HeaderImage = ({ contestImage, editing, category, handleName }) => {
         .catch((error) => {
           console.error("There was an error!", error);
         });
-      console.log(data);
       return data;
     }
   };

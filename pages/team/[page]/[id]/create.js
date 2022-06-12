@@ -21,6 +21,7 @@ import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import moment from "moment";
 import { useRouter } from "next/router";
 import SectionHeaderImage from "../../../../pages-sections/headerImage/SectionHeaderImage";
+import createChannel from "../../../../components/StreamChat/createChannel";
 
 const pageLabels = {
   roleLabel: "모집 분야",
@@ -110,7 +111,6 @@ const postTeamArticle = async (owner, article, team, id, imageURL) => {
   ).then((response) => {
     return response.json();
   });
-  console.log(contestId);
   const body = await {
     article: {
       create: {
@@ -174,7 +174,8 @@ const postTeamArticle = async (owner, article, team, id, imageURL) => {
   ).then((response) => {
     return response.json();
   });
-  console.log(data);
+
+  return data;
 };
 
 const useStyles = makeStyles(styles);
@@ -328,13 +329,21 @@ const CreateTeam = ({ data }) => {
       <IconButton
         className={classes.createButton}
         onClickCapture={async () => {
-          postTeamArticle(
+          const data = await postTeamArticle(
             session.user.id,
             article,
             team,
             router.query.id,
             imageURL
-          );
+          ).then((data) => {
+            createChannel(
+              data.team_id,
+              team.name,
+              session.user.id,
+              session.user.id
+            );
+          });
+
           router.push(
             `${process.env.HOSTNAME}/contest/Read/${router.query.id}`
           );

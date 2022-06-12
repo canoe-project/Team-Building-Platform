@@ -154,7 +154,6 @@ const reqUpdate = async (
   imageURL,
   tag
 ) => {
-  console.log(tag);
   const init = {
     contest: {
       update: {
