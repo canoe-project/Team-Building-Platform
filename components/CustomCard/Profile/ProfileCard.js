@@ -4,7 +4,8 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { CardActionArea, Avatar, CardHeader, Button, List, ListItem, ListItemText, Divider } from "@mui/material";
+import { CardActionArea, Avatar, CardHeader, List, ListItem, ListItemText, Divider } from "@mui/material";
+import { Button } from "@material-ui/core"
 import Tag from "../../Tags/Tag";
 import TagsContainer from "../../Tags/TagsContainer_profile_private";
 // import TagsContainer_profile_private from "../../Tags/TagsContainer_profile_private";

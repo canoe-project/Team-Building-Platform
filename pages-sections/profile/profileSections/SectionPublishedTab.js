@@ -91,22 +91,11 @@ const citizensReducer = (prevState, action) => {
 
 const reqUpdate = async (citizens, techStack, id) => {
   const init = {
-    citizens: {
-      update: {
-        tech_stack: {
-          set: [],
-        },
-      },
-    },
-    include: {
-      citizens: {
-        tech_stack: true,
-      },
+    tech_stack: {
+      set: [],
     },
   };
   const body = await {
-    citizens: {
-      update: {
         // profession : citizens.profession,
         ...(citizens.profession[0] !== undefined && {
           profession: {
@@ -178,8 +167,8 @@ const reqUpdate = async (citizens, techStack, id) => {
             }),
           },
         }),
-      }
-    }
+      
+    
   }
   const initData = await fetch(`${process.env.HOSTNAME}/api/profile/${id}`, {
     method: "POST",
@@ -229,7 +218,7 @@ const PublishedTab = ({ citizensValue, handleEditing }) => {
 
   const { data: session, status } = useSession();
 
-  
+
 
   useEffect(() => {
     Promise.all([
@@ -280,6 +269,7 @@ const PublishedTab = ({ citizensValue, handleEditing }) => {
       (techStack) => techStack.name !== name
     );
     setTechStack([...newTechStack]);
+    console.log(newTechStack);
   };
 
   const handlePublished = async (id) => {
@@ -337,7 +327,7 @@ const PublishedTab = ({ citizensValue, handleEditing }) => {
             <SectionTags
               handleTechStack={handleTechStack}
               handleTechStackDelete={handleTechStackDelete}
-              tech_stacks={citizens.tech_stack}
+              tech_stacks={selectTechStack}
             />
           </TabPanel>
           <TabPanel value={value} index={4}>
