@@ -123,6 +123,19 @@ const pageLabels = {
   teamContent: "개요",
 };
 
+const reqDelete = async (id) => {
+  const result = await fetch(
+    `${process.env.HOSTNAME}/api/article/Team/DELETE/${id}`,
+    {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    }
+  ).then((response) => {
+    return response.json();
+  });
+  return result;
+};
+
 const useStyles = makeStyles(styles);
 
 const reqUpdateMembers = async (userID, roleID, id) => {
@@ -219,7 +232,12 @@ const Overview = ({ data }) => {
                     >
                       <EditRoundedIcon />
                     </IconButton>
-                    <IconButton>
+                    <IconButton
+                      onClickCapture={() => {
+                        reqDelete(router.query.id);
+                        router.push("/contest");
+                      }}
+                    >
                       <DeleteRoundedIcon />
                     </IconButton>
                   </Box>

@@ -109,6 +109,17 @@ const styles = {
     borderRadius: "3rem",
     backgroundColor: "#ffffff",
   },
+  deleteIcon: {
+    alignSelf: "self-end",
+    position: "absolute",
+    top: "1rem",
+    marginBttom: "90%",
+    width: "0.5rem",
+    height: "0.5rem",
+  },
+  deleteButton: {
+    width: "0.25rem",
+  },
 };
 
 export default styles;

@@ -13,7 +13,7 @@ import Editor from "../../../components/Editors/CKEditorTextEditor";
 import Treasure from "../../../svg/contest/Treasure.svg";
 import moment from "moment";
 import styles from "../../../styles/jss/nextjs-material-kit/pages/overview/contestOverview";
-import { Typography, TextField, IconButton } from "@material-ui/core";
+import { Typography, TextField, IconButton, Grow } from "@material-ui/core";
 import TimePicker from "../../../components/TimePicker/TimePicker";
 
 import Searcher from "../../../components/Tags/Searcher/Search";
@@ -30,6 +30,7 @@ import { useRouter } from "next/router";
 import CommonTag from "../../../components/Tags/CommonTag/CommonTag";
 import TagRoot from "../../../components/Tags/TagRoot";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import MainLayout from "../../../components/Layout/MainLayout";
 const pageLabels = {
   edittingButton: "수정",
   deleteButton: "삭제",
@@ -265,7 +266,7 @@ const Overview = ({
   const [article, articleDispatch] = useReducer(articleReducer, articleOtion);
   const [contest, contestDispatch] = useReducer(contestReducer, contestOption);
   const [imageURL, setImageURL] = useState(null);
-  
+
   const [selectTag, setSelectTag] = useState([]);
   const [selectTechStack, setTechStack] = useState([]);
   const [selectProfesstion, setProfesstion] = useState([
@@ -373,6 +374,14 @@ const Overview = ({
   return (
     <Fragment>
       <GridContainer direction="column" spacing={3}>
+        <GridItem xs={12} sm={12} md={12}>
+          <SectionHeaderImage
+            editing={true}
+            category={"contest"}
+            contestImage={imageURLValue}
+            handleName={handle}
+          />
+        </GridItem>
         <GridItem xs={12} sm={12} md={12}>
           <GridContainer direction="row">
             <GridItem xs={1} sm={1} md={1}>

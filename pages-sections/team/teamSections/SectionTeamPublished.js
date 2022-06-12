@@ -254,6 +254,10 @@ const CreateTeam = ({
     const newRole = selectRole.filter((role) => role.name !== data.name);
     setSelectRole([...newRole, data]);
   };
+  const handleSelectRoleDelete = (name) => {
+    const newRole = selectRole.filter((role) => role.name !== name);
+    setSelectRole([...newRole]);
+  };
   const handleImageURL = (url) => {
     setImageURL(url);
   };
@@ -313,7 +317,10 @@ const CreateTeam = ({
                         classes.overviewItem + " " + classes.borderRight
                       }
                     >
-                      <RoleCard role={role}></RoleCard>
+                      <RoleCard
+                        role={role}
+                        handle={handleSelectRoleDelete}
+                      ></RoleCard>
                     </GridItem>
                   );
                 })}
