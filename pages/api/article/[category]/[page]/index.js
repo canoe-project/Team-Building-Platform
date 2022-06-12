@@ -19,7 +19,6 @@ const findContestPage = async (req, res) => {
     },
   });
 
-  console.log(orderQuery);
   const result = await prisma?.[`${category}Article`].findMany({
     include: {
       ...articleIncludeOption(category),

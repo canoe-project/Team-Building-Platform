@@ -1,7 +1,5 @@
 import { useState, useEffect, useReducer } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
-
 //components
 import GridContainer from "../../components/Grid/GridContainer";
 
@@ -11,11 +9,10 @@ import Card from "../../components/Card/Card";
 import ProfessionsLabel from "../../components/Tags/Professions/ProfessionsLabel";
 import Editor from "../../components/Editors/CKEditorTextEditor";
 import Treasure from "../../svg/contest/Treasure.svg";
-import moment from "moment";
-import styles from "../../styles/jss/nextjs-material-kit/pages/overview/contestOverview";
 import { Typography, TextField, IconButton } from "@material-ui/core";
-import TimePicker from "../../components/TimePicker/TimePicker";
+import styles from "../../styles/jss/nextjs-material-kit/pages/overview/contestOverview";
 
+import TimePicker from "../../components/TimePicker/TimePicker";
 import Searcher from "../../components/Tags/Searcher/Search";
 import TechStackItem from "../../components/Tags/Searcher/SearcherItem/TechStackItem";
 import TechStackCard from "../../components/CustomCard/TechStack/TechStakCard";
@@ -23,7 +20,10 @@ import ProfessionsItem from "../../components/Tags/Searcher/SearcherItem/Profess
 import MainLayout from "../../components/Layout/MainLayout";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import palettes from "../../styles/nextjs-material-kit/palettes";
+
+import moment from "moment";
 import { getSession, useSession, signIn, signOut } from "next-auth/react";
+import SectionHeaderImage from "../../pages-sections/headerImage/SectionHeaderImage";
 
 const pageLabels = {
   edittingButton: "수정",
@@ -139,7 +139,15 @@ const contestReducer = (prevState, action) => {
   }
 };
 
-const reqUpdate = async (id, article, contest, techStack, professtion, tag) => {
+const reqUpdate = async (
+  id,
+  article,
+  contest,
+  techStack,
+  professtion,
+  imageURL,
+  tag
+) => {
   const body = await {
     article: {
       create: {
@@ -203,6 +211,7 @@ const reqUpdate = async (id, article, contest, techStack, professtion, tag) => {
         user_id: id,
       },
     },
+    constest_image_url: imageURL,
   };
   const data = await fetch(
     `${process.env.HOSTNAME}/api/article/Contest/Create/id`,
@@ -228,6 +237,7 @@ const Overview = () => {
 
   const [article, articleDispatch] = useReducer(articleReducer, articleOtion);
   const [contest, contestDispatch] = useReducer(contestReducer, contestOption);
+  const [imageURL, setImageURL] = useState(null);
 
   const [selectTechStack, setTechStack] = useState([]);
   const [selectProfesstion, setProfesstion] = useState([
@@ -289,13 +299,17 @@ const Overview = () => {
   //   contestDispatch({ type: "contestTag", result: data.target.value });
   // };
 
+  const handle = (url) => {
+    setImageURL(url);
+  };
   const handlePublished = async () => {
     await reqUpdate(
       session.user.id,
       article,
       contest,
       selectTechStack,
-      selectProfesstion
+      selectProfesstion,
+      imageURL
       // tag
     );
     // router.push(`/contest/`);
@@ -306,6 +320,13 @@ const Overview = () => {
   return (
     <MainLayout>
       <GridContainer direction="column" spacing={3}>
+        <GridItem xs={12} sm={12} md={12}>
+          <SectionHeaderImage
+            editing={true}
+            category={"contest"}
+            handleName={handle}
+          />
+        </GridItem>
         <GridItem xs={12} sm={12} md={12}>
           <GridContainer direction="row">
             <GridItem xs={1} sm={1} md={1}>

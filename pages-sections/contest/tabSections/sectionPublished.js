@@ -23,7 +23,7 @@ import ProfessionsItem from "../../../components/Tags/Searcher/SearcherItem/Prof
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import palettes from "../../../styles/nextjs-material-kit/palettes";
 import { getSession, useSession, signIn, signOut } from "next-auth/react";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import SectionHeaderImage from "../../../pages-sections/headerImage/SectionHeaderImage";
 import { useRouter } from "next/router";
 const pageLabels = {
   edittingButton: "수정",
@@ -139,7 +139,14 @@ const contestReducer = (prevState, action) => {
   }
 };
 
-const reqUpdate = async (article, contest, techStack, professtion, id) => {
+const reqUpdate = async (
+  article,
+  contest,
+  techStack,
+  professtion,
+  id,
+  imageURL
+) => {
   const init = {
     contest: {
       update: {
@@ -212,6 +219,7 @@ const reqUpdate = async (article, contest, techStack, professtion, id) => {
         }),
       },
     },
+    constest_image_url: imageURL,
   };
   const initData = await fetch(
     `${process.env.HOSTNAME}/api/article/Contest/Put/${id}`,
@@ -250,6 +258,7 @@ const Overview = ({ articleValue, contestValue, handleEditing }) => {
 
   const [article, articleDispatch] = useReducer(articleReducer, articleOtion);
   const [contest, contestDispatch] = useReducer(contestReducer, contestOption);
+  const [imageURL, setImageURL] = useState(null);
 
   const [selectTechStack, setTechStack] = useState([]);
   const [selectProfesstion, setProfesstion] = useState([
@@ -324,14 +333,17 @@ const Overview = ({ articleValue, contestValue, handleEditing }) => {
   // const handleTagAppender = (data) => {
   //   contestDispatch({ type: "contestTag", result: data.target.value });
   // };
-
+  const handle = (url) => {
+    setImageURL(url);
+  };
   const handlePublished = async () => {
     await reqUpdate(
       article,
       contest,
       selectTechStack,
       selectProfesstion,
-      router.query.id
+      router.query.id,
+      imageURL
       // tag
     );
     handleEditing();
@@ -342,6 +354,13 @@ const Overview = ({ articleValue, contestValue, handleEditing }) => {
   return (
     <Fragment>
       <GridContainer direction="column" spacing={3}>
+        <GridItem xs={12} sm={12} md={12}>
+          <SectionHeaderImage
+            editing={true}
+            category={"contest"}
+            handleName={handle}
+          />
+        </GridItem>
         <GridItem xs={12} sm={12} md={12}>
           <GridContainer direction="row">
             <GridItem xs={1} sm={1} md={1}>

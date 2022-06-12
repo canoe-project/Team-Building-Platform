@@ -1,13 +1,13 @@
 import * as React from "react";
 
 //components
-import GridContainer from "../../../components/Grid/GridContainer";
-import GridItem from "../../../components/Grid/GridItem";
-import Button from "../../../components/CustomButtons/Button";
+import GridContainer from "../../components/Grid/GridContainer";
+import GridItem from "../../components/Grid/GridItem";
+import Button from "../../components/CustomButtons/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 import IconButton from "@mui/material/IconButton";
-import styles from "../../../styles/jss/nextjs-material-kit/pages/image/headerImage";
+import styles from "../../styles/jss/nextjs-material-kit/pages/image/headerImage";
 
 const useStyles = makeStyles(styles);
 
@@ -115,7 +115,7 @@ const HeaderImage = ({ contestImage, editing, category, handleName }) => {
                   if (handleName === undefined) {
                     await handleSubmit(e.name);
                   } else {
-                    handleName(e.name);
+                    handleName(`${imagePath.path}/${category}/${e.name}`);
                   }
                 });
               }}
