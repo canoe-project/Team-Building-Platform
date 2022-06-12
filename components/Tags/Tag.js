@@ -108,16 +108,13 @@ const Tag = ({ name, type, form, children }) => {
                   : ""}
               </p>
             </IconButton>
-            <Modal
-              title={
-                getTagInfo?.name !== null && getTagInfo?.name !== undefined
-                  ? getTagInfo.name
-                  : ""
-              }
-              open={modalToggle}
-              handleModalClose={handleModalClose}
-            >
+            <Modal open={modalToggle} handleModalClose={handleModalClose}>
               <SectionTagsView
+                title={
+                  getTagInfo?.name !== null && getTagInfo?.name !== undefined
+                    ? getTagInfo.name
+                    : ""
+                }
                 body={
                   getTagInfo?.description !== null &&
                   getTagInfo?.description !== undefined
@@ -154,16 +151,13 @@ const Tag = ({ name, type, form, children }) => {
               />
               {children}
             </IconButton>
-            <Modal
-              title={
-                getTagInfo?.name !== null && getTagInfo?.name !== undefined
-                  ? getTagInfo.name
-                  : ""
-              }
-              open={modalToggle}
-              handleModalClose={handleModalClose}
-            >
+            <Modal open={modalToggle} handleModalClose={handleModalClose}>
               <SectionTagsView
+                title={
+                  getTagInfo?.name !== null && getTagInfo?.name !== undefined
+                    ? getTagInfo.name
+                    : ""
+                }
                 body={
                   getTagInfo?.description !== null &&
                   getTagInfo?.description !== undefined
