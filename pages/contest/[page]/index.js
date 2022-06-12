@@ -18,7 +18,7 @@ import AddIcon from "@mui/icons-material/Add";
 import palettes from "../../../styles/nextjs-material-kit/palettes";
 // import FilterToggleItem from "../../../components/Article/PageFiler/FilterToggleItem";
 import TagRoot from "../../../components/Tags/TagRoot";
-import CommonTag from "../../../components/Tags/commonTag/CommonTag";
+import CommonTag from "../../../components/Tags/CommonTag/CommonTag";
 import Button from "../../../components/CustomButtons/Button";
 
 const pageLabels = {

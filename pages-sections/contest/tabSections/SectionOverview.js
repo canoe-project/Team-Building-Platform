@@ -10,7 +10,6 @@ import Card from "../../../components/Card/Card";
 import ProfessionsLabel from "../../../components/Tags/Professions/ProfessionsLabel";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import GradeIcon from "@mui/icons-material/Grade";
-import Editor from "../../../components/Editors/CKEditorTextEditor";
 
 import Treasure from "../../../svg/contest/Treasure.svg";
 import moment from "moment";
@@ -35,6 +34,19 @@ const pageLabels = {
   contestTechStack: "기술 스택",
   prize: "원",
   content: "대회 상세 내용",
+};
+
+const reqDelete = async (id) => {
+  const result = await fetch(
+    `${process.env.HOSTNAME}/api/article/Contest/DELETE/${id}`,
+    {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    }
+  ).then((response) => {
+    return response.json();
+  });
+  return result;
 };
 
 const customStyles = makeStyles(styles);
@@ -97,7 +109,12 @@ const Overview = ({ article, contest, professions, handleEditing }) => {
             >
               <EditRoundedIcon />
             </IconButton>
-            <IconButton>
+            <IconButton
+              onClickCapture={() => {
+                reqDelete(router.query.id);
+                router.push("/contest");
+              }}
+            >
               <DeleteRoundedIcon />
             </IconButton>
           </GridItem>
