@@ -172,7 +172,11 @@ const SearchBar = () => {
       >
         {preview.map((data, index) => {
           return (
-            <Link href={`/contest/passToArticle?id=${data._id}`} passHref>
+            <Link
+              key={index}
+              href={`/contest/passToArticle?id=${data._id}`}
+              passHref
+            >
               <MenuItem key={index} className={classes.item}>
                 <Chip
                   label={data._source.professtion_name}

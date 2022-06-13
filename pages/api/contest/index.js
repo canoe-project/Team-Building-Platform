@@ -1,19 +1,20 @@
+import { resolve } from "path";
 import prisma from "../../../utilities/prisma/client";
 
 const handle = async (req, res) => {
   switch (req.method) {
     case "GET":
-      findContest(req, res);
-      break;
+      await findContest(req, res);
+      return resolve();
     case "POST":
       createContest(req, res);
-      break;
+      return resolve();
     case "PUT":
       updateContest(req, res);
-      break;
+      return resolve();
     case "DELETE":
       deleteContest(req, res);
-      break;
+      return resolve();
     default:
       throw new Error(console.log(req.method));
   }
@@ -32,13 +33,19 @@ const findContest = async (req, res) => {
       },
     },
   };
-
-  const result = await prisma.contest.findUnique({
-    where: whereQuery,
-    include: includeQuery,
-  });
-
-  res.json(result);
+  const result = await prisma.contest
+    .findUnique({
+      where: whereQuery,
+      include: includeQuery,
+    })
+    .then((result) => {
+      res.json(result);
+      resolve();
+    })
+    .catch((err) => {
+      res.json(err);
+      res.status(405).end();
+    });
 };
 
 const createContest = async (req, res) => {
@@ -77,6 +84,7 @@ const createContest = async (req, res) => {
     },
   });
   res.json(result);
+  res.end("success");
 };
 
 const updateContest = async (req, res) => {
@@ -124,6 +132,7 @@ const updateContest = async (req, res) => {
     },
   });
   res.json(result);
+  resolve();
 };
 
 //특정 아이디의 대회 정보를 삭제
@@ -135,6 +144,7 @@ const deleteContest = async (req, res) => {
     },
   });
   res.json(result);
+  resolve();
 };
 
 export default handle;

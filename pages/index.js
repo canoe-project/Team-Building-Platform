@@ -1,12 +1,17 @@
 import MainLayout from "../components/Layout/MainLayout";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState, useCallback } from "react";
 import MainSVG from "../svg/main/main_art.svg";
 import GridContainer from "../components/Grid/GridContainer";
 import GridItem from "../components/Grid/GridItem";
 import mainPageStyle from "../styles/jss/nextjs-material-kit/pages/mainPage/mainPage";
 import { makeStyles } from "@material-ui/core/styles";
 import CompetitionChat from "../components/Visualizations/competitionChat/CompetitionChat";
-import { Button } from "@material-ui/core";
+import { Button, Typography } from "@material-ui/core";
+import Card from "../components/Card/Card";
+import throttle from "lodash/throttle";
+import Parser from "html-react-parser";
+import Link from "next/link";
+
 const useStyles = makeStyles(mainPageStyle);
 
 const pageLabels = {
@@ -16,7 +21,7 @@ const pageLabels = {
 };
 
 const index = "team_index";
-
+const size = 10;
 const reqCompetition = async (index, filed, size) => {
   const data = await fetch(
     `${process.env.HOSTNAME}/api/search/groupBy?index=${index}&filed=${filed}&size=${size}`,
@@ -31,15 +36,47 @@ const reqCompetition = async (index, filed, size) => {
   return data;
 };
 
+const reqContestInfo = async (id) => {
+  const data = await fetch(`${process.env.HOSTNAME}/api/contest?id=${id}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  }).then((response) => {
+    return response.json();
+  });
+
+  return data;
+};
+
 export default function MainPage() {
   const [headCopy, setHeadCopy] = useState("");
   const [subCopy, setSubCopy] = useState("");
   const [content, setContentCopy] = useState("");
   const [loading, setLoading] = useState(true);
   const [competition, setCompetition] = useState([]);
-  const [competitionRank, setCompetitionRank] = useState(0);
-
+  const [topCompetition, setTopCompetition] = useState({
+    id: 0,
+    name: "",
+    prize: 0,
+    content: "",
+    end_period: "",
+    start_period: "",
+    createAt: "",
+    contest_article: [
+      {
+        article_id: 0,
+      },
+    ],
+  });
   const classes = useStyles();
+
+  const delayedSearch = useCallback(
+    throttle((q) => {
+      reqContestInfo(q).then((data) => {
+        setTopCompetition(data);
+      });
+    }, 600),
+    []
+  );
 
   useEffect(() => {
     Promise.all([
@@ -48,20 +85,14 @@ export default function MainPage() {
       setContentCopy(pageLabels.mainContent),
     ]);
 
-    reqCompetition(index, "A", 0).then((data) => {
+    reqCompetition(index, "A", size).then(async (data) => {
       setCompetition(data);
       setLoading(false);
     });
   }, []);
-  useEffect(() => {}, [competitionRank]);
-  const handleRank = (data) => {
-    setCompetitionRank(data);
-  };
 
-  const handleCompetitionSelector = () => {
-    if (competition.length > competitionRank) {
-      console.log(competition[competitionRank]);
-    }
+  const handleRank = (data) => {
+    delayedSearch(data);
   };
 
   if (loading) return <div>loading...</div>;
@@ -86,13 +117,34 @@ export default function MainPage() {
         </GridItem>
       </GridContainer>
       <GridContainer direction="row">
-        <GridItem xs={8} sm={8} md={8}>
+        <GridItem xs={9} sm={9} md={9}>
           <CompetitionChat
             handle={handleRank}
             className={classes.chatContainer}
+            value={competition}
           />
         </GridItem>
-        <Button onClick={handleCompetitionSelector}></Button>
+        <GridItem xs={3} sm={3} md={3} className={classes.leftContain}>
+          <Card className={classes.competitionCard}>
+            {topCompetition === undefined ? (
+              ""
+            ) : (
+              <Fragment>
+                <Link
+                  href={`${process.env.HOSTNAME}/contest/passToArticle?id=${topCompetition.id}`}
+                  passHref
+                >
+                  <Typography className={classes.competitionTitle}>
+                    {topCompetition.name}
+                  </Typography>
+                </Link>
+                <Typography className={classes.competitionBody}>
+                  {Parser(topCompetition.content)}
+                </Typography>
+              </Fragment>
+            )}
+          </Card>
+        </GridItem>
       </GridContainer>
     </MainLayout>
   );

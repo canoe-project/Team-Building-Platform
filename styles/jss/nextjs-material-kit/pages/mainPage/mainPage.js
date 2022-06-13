@@ -37,6 +37,27 @@ const mainPageStyle = {
   chatContainer: {
     width: "100%",
   },
+  competitionCard: {
+    backgroundColor: palettes.lightPink3,
+    padding: "3rem",
+    height: "80%",
+  },
+  leftContain: {
+    marginLeft: "auto",
+  },
+  competitionTitle: {
+    fontFamily: "Do Hyeon",
+    fontSize: "2.5em",
+    color: "#ffefef",
+    borderBottom: "0.5rem solid #ffefef",
+    paddingBottom: "5rem",
+  },
+  competitionBody: {
+    color: "#9f7275",
+    fontFamily: "Do Hyeon",
+    fontSize: "1.5rem",
+    marginTop: "2rem",
+  },
 };
 
 export default mainPageStyle;

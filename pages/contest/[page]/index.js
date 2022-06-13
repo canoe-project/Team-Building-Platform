@@ -264,9 +264,13 @@ export default function CompetitionSearchPage({
                 {pageLabels.topTag}
               </Typography>
               <TagRoot>
-                {topTag.map((tag) => {
+                {topTag.map((tag, index) => {
                   return (
-                    <CommonTag name={tag.name} handle={reqTag}></CommonTag>
+                    <CommonTag
+                      key={index}
+                      name={tag.name}
+                      handle={reqTag}
+                    ></CommonTag>
                   );
                 })}
               </TagRoot>
@@ -371,14 +375,15 @@ export async function getServerSideProps(context) {
   });
 
   const maxPage = await fetch(
-    `${process.env.HOSTNAME}/api/article/Contest?${
-      currentProfession !== undefined
-        ? `&currentProfession=${currentProfession}`
-        : {}
-    }${tag !== undefined ? `&tag=${tag}` : {}}
-    ${sort !== undefined ? `&sort=${sort}` : {}}
-    ${prize !== undefined ? `&prize=${prize}` : {}}
-    `,
+    `${process.env.HOSTNAME}/api/article/Contest?` +
+      `${
+        currentProfession !== undefined
+          ? `&currentProfession=${currentProfession}`
+          : ""
+      }` +
+      `${tag !== undefined ? `&tag=${tag}` : ""}` +
+      `${sort !== undefined ? `&sort=${sort}` : ""}` +
+      `${prize !== undefined ? `&prize=${prize}` : ""}`,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },

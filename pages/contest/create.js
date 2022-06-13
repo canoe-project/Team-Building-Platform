@@ -364,9 +364,10 @@ const Overview = () => {
                 </GridItem>
                 <GridItem>
                   <TagRoot>
-                    {selectTag.map((tag) => {
+                    {selectTag.map((tag, index) => {
                       return (
                         <CommonTag
+                          key={index}
                           name={tag.name}
                           icon={CloseRoundedIcon}
                           handleDelete={handleTagDelete}

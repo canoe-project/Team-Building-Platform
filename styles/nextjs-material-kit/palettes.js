@@ -3,6 +3,7 @@ const palettes = {
   lightPurple: "#a67dff",
   lightpink1: "#ffc7ff",
   lightPink2: "#ffc8dd",
+  lightPink3 : "#f0b5b7",
   darkPink1: "#ffafcc",
   darkPink2: "#eea2ff",
   hotPink: "#ef476f",
