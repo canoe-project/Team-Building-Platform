@@ -114,6 +114,13 @@ const contestOverView = {
   deleteButton: {
     width: "0.25rem",
   },
+  edidorContainer: {
+    marginLeft: "auto",
+    marginBottom: "auto",
+  },
+  bodyCard:{
+    minHeight : "30rem"
+  }
 };
 
 export default contestOverView;

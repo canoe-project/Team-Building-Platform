@@ -13,6 +13,7 @@ const styles = {
     overflow: "auto",
     maxWidth: "100%",
     height: "4rem",
+    gap: "1rem",
   },
 };
 

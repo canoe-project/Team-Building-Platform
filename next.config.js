@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+const path = require("path");
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: false, // it should be false by default
@@ -41,6 +42,11 @@ module.exports = {
   compiler: {
     // ssr and displayName are configured by default
     styledComponents: true,
+  },
+};
+module.exports = {
+  sassOptions: {
+    includePaths: [path.join(__dirname, "styles")],
   },
 };
 module.exports = {

@@ -56,7 +56,6 @@ const SectionTeamList = ({ contest }) => {
   useEffect(() => {
     reqTeamList(contest)
       .then(async ({ data, maxPage }) => {
-        console.log(data);
         await Promise.all([setTeamList(data), setMaxPage(maxPage)]);
       })
       .then(() => {

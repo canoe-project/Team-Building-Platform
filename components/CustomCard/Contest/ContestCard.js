@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import { CardActionArea } from "@mui/material";
 import TagContainer from "../../Tags/TagsContainer";
@@ -19,7 +18,8 @@ import Treasure from "../../../svg/contest/treasure.svg";
 import Parser from "html-react-parser";
 import moment from "moment";
 
-import CommonTag from "../../Tags/commonTag/CommonTag";
+import CommonTag from "../../Tags/CommonTag/CommonTag";
+import ModalTag from "../../Tags/ModalTag/ModalTag";
 import TagRoot from "../../Tags/TagRoot";
 import { useRouter } from "next/router";
 
@@ -83,6 +83,7 @@ const styles = {
     borderTop: "0.0625rem solid #D7E2EB",
     height: "5rem",
   },
+  footerFont: {},
   footerContainer: {
     width: "100%",
     alignItems: "center",
@@ -110,7 +111,6 @@ const ContestCard = (props) => {
     ).then(async (response) => {
       return await response.json();
     });
-
     setContest(data);
   };
 
@@ -131,7 +131,7 @@ const ContestCard = (props) => {
       <Card className={classes.card + " " + className}>
         <CardHeader>
           <Link
-            href={`${process.env.HOSTNAME}/contest/Read/${contest.id}`}
+            href={`${process.env.HOSTNAME}/contest/Read/${contest.article_id}`}
             passHref
           >
             <CardActionArea>
@@ -153,22 +153,29 @@ const ContestCard = (props) => {
             <GridItem xs={8} sm={8} md={8}>
               <Box>
                 <Link
-                  href={`${process.env.HOSTNAME}/contest/Read/${contest.id}`}
+                  href={`${process.env.HOSTNAME}/contest/Read/${contest.article_id}`}
                   passHref
                 >
                   <Typography className={classes.title}>
                     {contest.article.content.title}
                   </Typography>
                 </Link>
-                <p>
+                <Typography>
                   {moment(contest.contest.start_period).format("YYYY.MM.DD")}~
                   {moment(contest.contest.end_period).format("YYYY.MM.DD")}
-                </p>
+                </Typography>
               </Box>
             </GridItem>
             <TagRoot>
-              {contest.contest.Tag.map((tag) => {
-                return <CommonTag name={tag.name} handle={reqTag}></CommonTag>;
+              {contest.contest.Tag.map((tag, index) => {
+                return (
+                  <CommonTag
+                    name={tag.name}
+                    description={tag.description}
+                    image={tag.image_url}
+                    key={index}
+                  ></CommonTag>
+                );
               })}
             </TagRoot>
           </GridContainer>
@@ -177,21 +184,31 @@ const ContestCard = (props) => {
 
         <CardBody className={classes.cardBody}>
           <CardContent className={classes.cardBody}>
-            <Box className={classes.subTitle}>
-              <p>{pageLabels.contestBodyLabel}</p>
-            </Box>
+            <Typography className={classes.subTitle}>
+              {pageLabels.contestBodyLabel}
+            </Typography>
+
             {/* <Typography>{contest.contest.team.length}명 </Typography> */}
-            <Box className={classes.body}>
-              <p>{Parser(contest.article.content.body)}</p>
-            </Box>
-            <Box className={classes.subTitle}>
-              <p>{pageLabels.techStackLabel}</p>
-            </Box>
-            <TagContainer
-              tags={contest.contest.tech_stack}
-              type="TechStack"
-              form="icon"
-            />
+
+            <Typography className={classes.body}>
+              {Parser(contest.article.content.body)}
+            </Typography>
+
+            <Typography className={classes.subTitle}>
+              {pageLabels.techStackLabel}
+            </Typography>
+            <TagRoot>
+              {contest.contest.tech_stack.map((stack, index) => {
+                return (
+                  <ModalTag
+                    name={stack.name}
+                    image={stack.image_url}
+                    description={stack.description}
+                    key={index}
+                  ></ModalTag>
+                );
+              })}
+            </TagRoot>
           </CardContent>
         </CardBody>
 
@@ -201,7 +218,7 @@ const ContestCard = (props) => {
               <Treasure className={classes.icon} />
             </GridItem>
             <GridItem xs={8} sm={8} md={8} className={classes.prize}>
-              <p>{`${contest.contest.prize}${pageLabels.prize}`}</p>
+              <Typography>{`${contest.contest.prize}${pageLabels.prize}`}</Typography>
             </GridItem>
           </GridContainer>
         </CardFooter>

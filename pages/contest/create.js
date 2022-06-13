@@ -1,7 +1,5 @@
 import { useState, useEffect, useReducer } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
-
 //components
 import GridContainer from "../../components/Grid/GridContainer";
 
@@ -11,11 +9,10 @@ import Card from "../../components/Card/Card";
 import ProfessionsLabel from "../../components/Tags/Professions/ProfessionsLabel";
 import Editor from "../../components/Editors/CKEditorTextEditor";
 import Treasure from "../../svg/contest/Treasure.svg";
-import moment from "moment";
-import styles from "../../styles/jss/nextjs-material-kit/pages/overview/contestOverview";
 import { Typography, TextField, IconButton } from "@material-ui/core";
-import TimePicker from "../../components/TimePicker/TimePicker";
+import styles from "../../styles/jss/nextjs-material-kit/pages/overview/contestOverview";
 
+import TimePicker from "../../components/TimePicker/TimePicker";
 import Searcher from "../../components/Tags/Searcher/Search";
 import TechStackItem from "../../components/Tags/Searcher/SearcherItem/TechStackItem";
 import TechStackCard from "../../components/CustomCard/TechStack/TechStakCard";
@@ -23,8 +20,17 @@ import ProfessionsItem from "../../components/Tags/Searcher/SearcherItem/Profess
 import MainLayout from "../../components/Layout/MainLayout";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import palettes from "../../styles/nextjs-material-kit/palettes";
-import { getSession, useSession, signIn, signOut } from "next-auth/react";
 
+import moment from "moment";
+import { getSession, useSession, signIn, signOut } from "next-auth/react";
+import SectionHeaderImage from "../../pages-sections/headerImage/SectionHeaderImage";
+import { useRouter } from "next/router";
+import CommonTag from "../../components/Tags/CommonTag/CommonTag";
+import TagRoot from "../../components/Tags/TagRoot";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import TagItem from "../../components/Tags/Searcher/SearcherItem/TagItem";
+import SectionGenerateTags from "../../pages-sections/tags/SectionGenerateTags";
+import SectionGenerateTagsImage from "../../pages-sections/tags/SectionGenerateTagsImage";
 const pageLabels = {
   edittingButton: "수정",
   deleteButton: "삭제",
@@ -139,7 +145,15 @@ const contestReducer = (prevState, action) => {
   }
 };
 
-const reqUpdate = async (id, article, contest, techStack, professtion, tag) => {
+const reqUpdate = async (
+  id,
+  article,
+  contest,
+  techStack,
+  professtion,
+  imageURL,
+  tag
+) => {
   const body = await {
     article: {
       create: {
@@ -164,18 +178,11 @@ const reqUpdate = async (id, article, contest, techStack, professtion, tag) => {
         end_period: contest.end_period,
         start_period: contest.start_period,
         createAt: contest.createAt,
-        ...(contest.Tag[0] !== undefined && {
+        ...(tag[0] !== undefined && {
           Tag: {
-            connectOrCreate: contest.Tag.map((t) => {
+            connect: tag.map((t) => {
               return {
-                where: {
-                  name: t.name,
-                },
-                create: {
-                  name: t.name,
-                  description: "",
-                  tag_color: "",
-                },
+                name: t.name,
               };
             }),
           },
@@ -203,6 +210,7 @@ const reqUpdate = async (id, article, contest, techStack, professtion, tag) => {
         user_id: id,
       },
     },
+    constest_image_url: imageURL,
   };
   const data = await fetch(
     `${process.env.HOSTNAME}/api/article/Contest/Create/id`,
@@ -214,13 +222,12 @@ const reqUpdate = async (id, article, contest, techStack, professtion, tag) => {
   ).then((response) => {
     return response.json();
   });
-  console.log(data);
 };
 
 const customStyles = makeStyles(styles);
 const Overview = () => {
   const { data: session, status } = useSession();
-
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const classes = customStyles();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -228,7 +235,9 @@ const Overview = () => {
 
   const [article, articleDispatch] = useReducer(articleReducer, articleOtion);
   const [contest, contestDispatch] = useReducer(contestReducer, contestOption);
+  const [imageURL, setImageURL] = useState(null);
 
+  const [selectTag, setSelectTag] = useState([]);
   const [selectTechStack, setTechStack] = useState([]);
   const [selectProfesstion, setProfesstion] = useState([
     {
@@ -250,16 +259,27 @@ const Overview = () => {
     );
     setTechStack([...newTechStack, data]);
   };
+  const handleTechStackDelete = (name) => {
+    const newTechStack = selectTechStack.filter(
+      (techStack) => techStack.name !== name
+    );
+    setTechStack([...newTechStack]);
+  };
+
   const handleProfesstion = (data) => {
     const newProfesstion = selectProfesstion.filter(
       (professtion) => professtion.name !== data.name
     );
     setProfesstion([data]);
   };
-
-  useEffect(() => {
-    setLoading(false);
-  }, []);
+  const handleTag = (data) => {
+    const newTag = selectTag.filter((tag) => tag.name !== data.name);
+    setSelectTag([...newTag, data]);
+  };
+  const handleTagDelete = (name) => {
+    const newTag = selectTag.filter((tag) => tag.name !== name);
+    setSelectTag([...newTag]);
+  };
 
   const handleArticleTitleChange = (data) => {
     articleDispatch({ type: "contentTitle", result: data.target.value });
@@ -282,21 +302,19 @@ const Overview = () => {
   const handlePrize = (data) => {
     contestDispatch({ type: "contestPrize", result: data.target.value });
   };
-  // const handleProfession = async (data) => {
-  //   contestDispatch({ type: "contestProfession", result: data });
-  // };
-  // const handleTagAppender = (data) => {
-  //   contestDispatch({ type: "contestTag", result: data.target.value });
-  // };
 
+  const handle = (url) => {
+    setImageURL(url);
+  };
   const handlePublished = async () => {
     await reqUpdate(
       session.user.id,
       article,
       contest,
       selectTechStack,
-      selectProfesstion
-      // tag
+      selectProfesstion,
+      imageURL,
+      selectTag
     );
     // router.push(`/contest/`);
   };
@@ -306,6 +324,13 @@ const Overview = () => {
   return (
     <MainLayout>
       <GridContainer direction="column" spacing={3}>
+        <GridItem xs={12} sm={12} md={12}>
+          <SectionHeaderImage
+            editing={true}
+            category={"contest"}
+            handleName={handle}
+          />
+        </GridItem>
         <GridItem xs={12} sm={12} md={12}>
           <GridContainer direction="row">
             <GridItem xs={1} sm={1} md={1}>
@@ -317,6 +342,13 @@ const Overview = () => {
                   size={12}
                   direction={"row"}
                   handle={handleProfesstion}
+                  modal={
+                    <SectionGenerateTagsImage
+                      category={"profession"}
+                      handle={handleProfesstion}
+                    />
+                  }
+                  modalLabel={"분야 생성"}
                 >
                   <ProfessionsItem />
                 </Searcher>
@@ -331,11 +363,35 @@ const Overview = () => {
                   <Typography>{moment().format("YYYY.MM.DD")}</Typography>
                 </GridItem>
                 <GridItem>
-                  {/* <TagsContainer
-                  tags={contest.Tag}
-                  type={"Tag"}
-                  form={"textOnly"}
-                /> */}
+                  <TagRoot>
+                    {selectTag.map((tag, index) => {
+                      return (
+                        <CommonTag
+                          key={index}
+                          name={tag.name}
+                          icon={CloseRoundedIcon}
+                          handleDelete={handleTagDelete}
+                        ></CommonTag>
+                      );
+                    })}
+                    <Searcher
+                      index={"tag_index"}
+                      filed={["name", "description", "type"]}
+                      basicQuery={"tag"}
+                      size={12}
+                      direction={"column"}
+                      handle={handleTag}
+                      modal={
+                        <SectionGenerateTags
+                          category={"tag"}
+                          handle={handleTag}
+                        />
+                      }
+                      modalLabel={"태그 생성"}
+                    >
+                      <TagItem />
+                    </Searcher>
+                  </TagRoot>
                 </GridItem>
               </GridContainer>
             </GridItem>
@@ -457,7 +513,10 @@ const Overview = () => {
                                   classes.borderTop
                                 }
                               >
-                                <TechStackCard data={techStack}></TechStackCard>
+                                <TechStackCard
+                                  data={techStack}
+                                  handle={handleTechStackDelete}
+                                ></TechStackCard>
                               </GridItem>
                             );
                           })}
@@ -476,6 +535,13 @@ const Overview = () => {
                               size={12}
                               direction={"row"}
                               handle={handleTechStack}
+                              modal={
+                                <SectionGenerateTagsImage
+                                  category={"techStack"}
+                                  handle={handleTechStack}
+                                />
+                              }
+                              modalLabel={"기술 스택 생성"}
                             >
                               <TechStackItem />
                             </Searcher>
@@ -504,7 +570,9 @@ const Overview = () => {
       <IconButton
         className={classes.createButton}
         onClickCapture={async () => {
-          await handlePublished();
+          await handlePublished().then(() => {
+            router.push(`${process.env.HOSTNAME}/contest/`);
+          });
         }}
       >
         <SaveAltIcon

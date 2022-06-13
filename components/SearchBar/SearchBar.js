@@ -1,19 +1,31 @@
 import { useState, useEffect, Fragment } from "react";
-import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Fade from "@mui/material/Fade";
 import SearchIcon from "@mui/icons-material/Search";
 import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import Image from "next/image";
-import Modal from "../Modal/Modal";
+
 import { Box } from "@mui/system";
 import Popover from "@mui/material/Popover";
 import { makeStyles } from "@material-ui/core/styles";
-import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
+import { Chip, Typography } from "@material-ui/core";
+import palettes from "../../styles/nextjs-material-kit/palettes";
+import Link from "next/link";
 
 const styles = {
-  searchItem: {},
+  chip: {
+    marginRight: "2rem",
+    backgroundColor: palettes.darkBlue3,
+    color: "#ffffff",
+  },
+  item: {
+    margin: "0.8rem",
+    borderBottom: "0.0625rem solid #D7E2EB",
+  },
+  baseItem: {
+    width: "35.625rem",
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -79,6 +91,7 @@ const reqSearch = async (searchQuery, index, filed, size) => {
 const basicQuery = "contest";
 const size = 10;
 const SearchBar = () => {
+  const classes = useStyles();
   const [searchQuery, setSearchQuery] = useState("");
   const [index, setIndex] = useState("contest_index");
   const [filed, setFiled] = useState([
@@ -127,7 +140,7 @@ const SearchBar = () => {
 
   if (loading) return <div>loading...</div>;
   return (
-    <span>
+    <Box>
       <Search>
         <SearchIconWrapper>
           <SearchIcon />
@@ -157,18 +170,26 @@ const SearchBar = () => {
         disableAutoFocus={true}
         disableEnforceFocus={true}
       >
-        {preview.map((data) => {
+        {preview.map((data, index) => {
           return (
-            <MenuItem key={data._id}>
-              {/* {data.professtion_image_url === "" ? null : (
-                <img src={data.professtion_image_url} />
-              )} */}
-              {data._source.contest_name}
-            </MenuItem>
+            <Link
+              key={index}
+              href={`/contest/passToArticle?id=${data._id}`}
+              passHref
+            >
+              <MenuItem key={index} className={classes.item}>
+                <Chip
+                  label={data._source.professtion_name}
+                  className={classes.chip}
+                ></Chip>
+                <Typography>{data._source.contest_name}</Typography>
+              </MenuItem>
+            </Link>
           );
         })}
+        <MenuItem className={classes.baseItem}></MenuItem>
       </Popover>
-    </span>
+    </Box>
   );
 };
 

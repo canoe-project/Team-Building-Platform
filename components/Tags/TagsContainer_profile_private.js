@@ -8,7 +8,6 @@ const ListItem = styled("li")(({ theme }) => ({
 }));
 
 export default function ChipsArray({ tags, type, form, children }) {
-  console.log(tags);
 
   return (
     <Box

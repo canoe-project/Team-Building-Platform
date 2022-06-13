@@ -19,6 +19,12 @@ import palettes from "../../../../styles/nextjs-material-kit/palettes";
 import createInvite from "../../../../components/StreamChat/CreateInvite";
 import { getSession, useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
+import { Typography, IconButton } from "@material-ui/core";
+
+import SectionTeamPublished from "../../../../pages-sections/team/teamSections/SectionTeamPublished";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+
 const styles = {
   title: {
     alignItems: "center",
@@ -105,12 +111,29 @@ const styles = {
     marginLeft: "auto",
     marginRight: "1rem",
   },
+  edidorContainer: {
+    marginLeft: "auto",
+  },
 };
 
 const pageLabels = {
   roleLabel: "모집 분야",
   participantsLabel: "참여자",
   joinButton: "신청",
+  teamContent: "개요",
+};
+
+const reqDelete = async (id) => {
+  const result = await fetch(
+    `${process.env.HOSTNAME}/api/article/Team/DELETE/${id}`,
+    {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    }
+  ).then((response) => {
+    return response.json();
+  });
+  return result;
 };
 
 const useStyles = makeStyles(styles);
@@ -171,113 +194,157 @@ const Overview = ({ data }) => {
     classes.imgFluid
   );
   useEffect(() => {
-    console.log(data);
     setLoading(false);
   }, []);
 
+  const handleEditing = () => {
+    setEditing(!editing);
+  };
+
   return (
     <MainLayout>
-      <SectionHeaderImage
-        contestImage={data.team_image_url}
-        editing={editing}
-      />
-      <GridContainer direction="column">
-        <GridItem className={classes.titleContain} xs={9} sm={9} md={9}>
+      {editing ? (
+        <SectionTeamPublished
+          articleValue={data.article}
+          teamValue={data.team}
+          imageURLValue={data.team_image_url}
+          handleEditing={handleEditing}
+        />
+      ) : (
+        <Fragment>
+          <SectionHeaderImage
+            contestImage={data.team_image_url}
+            editing={editing}
+          />
           <GridContainer direction="column">
-            <GridItem>
-              <p className={classes.title}>{data.article.content.title}</p>
-            </GridItem>
-            <GridItem>
-              <p>{moment(data.article.createdAt).format("YYYY.MM.DD")}</p>
-            </GridItem>
-          </GridContainer>
-        </GridItem>
-        <GridItem>
-          <Card className={classes.card}>
-            <Box className={classes.body}>
-              {Parser(data.article.content.body)}
-            </Box>
-          </Card>
-        </GridItem>
-        <GridItem className={classes.subTitle}>{pageLabels.roleLabel}</GridItem>
-        <GridItem xs={12} sm={12} md={12}>
-          <Card>
-            <GridContainer direction="row">
-              {data.team.role.map((role) => {
-                return (
-                  <GridItem
-                    xs={3}
-                    sm={3}
-                    md={3}
-                    className={classes.overviewItem + " " + classes.borderRight}
-                    key={role.id}
-                  >
-                    <GridContainer
-                      direction="column"
-                      className={classes.overview}
+            <GridItem className={classes.titleContain} xs={12} sm={12} md={12}>
+              <GridContainer direction="column">
+                <GridItem>
+                  <Typography className={classes.title}>
+                    {data.article.content.title}
+                  </Typography>
+                  <Box className={classes.edidorContainer}>
+                    <IconButton
+                      onClickCapture={() => {
+                        handleEditing();
+                      }}
                     >
+                      <EditRoundedIcon />
+                    </IconButton>
+                    <IconButton
+                      onClickCapture={() => {
+                        reqDelete(router.query.id);
+                        router.push("/contest");
+                      }}
+                    >
+                      <DeleteRoundedIcon />
+                    </IconButton>
+                  </Box>
+                </GridItem>
+
+                <GridItem>
+                  <Typography>
+                    {moment(data.article.createdAt).format("YYYY.MM.DD")}
+                  </Typography>
+                </GridItem>
+              </GridContainer>
+            </GridItem>
+            <GridItem>
+              <Card className={classes.card}>
+                <Typography className={classes.subTitle}>
+                  {pageLabels.teamContent}
+                </Typography>
+                <Box className={classes.body}>
+                  {Parser(data.article.content.body)}
+                </Box>
+              </Card>
+            </GridItem>
+            <GridItem className={classes.subTitle}>
+              {pageLabels.roleLabel}
+            </GridItem>
+            <GridItem xs={12} sm={12} md={12}>
+              <Card>
+                <GridContainer direction="row">
+                  {data.team.role.map((role) => {
+                    return (
                       <GridItem
-                        xs={7}
-                        sm={7}
-                        md={7}
-                        className={classes.overviewBody}
+                        xs={3}
+                        sm={3}
+                        md={3}
+                        className={
+                          classes.overviewItem + " " + classes.borderRight
+                        }
+                        key={role.id}
                       >
-                        <Tag
-                          name={role.name}
-                          type={"Role"}
-                          form={"role"}
-                          team={role.team}
-                          role={role.id}
+                        <GridContainer
+                          direction="column"
+                          className={classes.overview}
                         >
-                          <p>{role.description}</p>
-                        </Tag>
-                      </GridItem>
-                      <GridItem
-                        className={classes.subTitle + " " + classes.cardFooter}
-                      >
-                        <span>{pageLabels.participantsLabel}</span>
-                      </GridItem>
-                      <GridItem>
-                        <GridContainer direction="row">
-                          <GridItem xs={12} sm={12} md={12}>
-                            <Role
-                              className={classes.avatarIcon}
-                              team={data.team.id}
+                          <GridItem
+                            xs={7}
+                            sm={7}
+                            md={7}
+                            className={classes.overviewBody}
+                          >
+                            <Tag
+                              name={role.name}
+                              type={"Role"}
+                              form={"role"}
+                              team={role.team}
                               role={role.id}
-                            />
+                            >
+                              <pageLabels>{role.description}</pageLabels>
+                            </Tag>
                           </GridItem>
+                          <GridItem
+                            className={
+                              classes.subTitle + " " + classes.cardFooter
+                            }
+                          >
+                            <span>{pageLabels.participantsLabel}</span>
+                          </GridItem>
+                          <GridItem>
+                            <GridContainer direction="row">
+                              <GridItem xs={12} sm={12} md={12}>
+                                <Role
+                                  className={classes.avatarIcon}
+                                  team={data.team.id}
+                                  role={role.id}
+                                />
+                              </GridItem>
+                            </GridContainer>
+                          </GridItem>
+                          <Button
+                            className={classes.joinButton}
+                            onClick={async (e) => {
+                              await reqUpdateMembers(
+                                session.user.id,
+                                role.id,
+                                router.query.id
+                              );
+                              await createInvite(
+                                data.citizens.user_id,
+                                data.citizens.user_id,
+                                data.id,
+                                session.user.id
+                              );
+                            }}
+                          >
+                            {pageLabels.joinButton}
+                          </Button>
                         </GridContainer>
                       </GridItem>
-                      <Button
-                        className={classes.joinButton}
-                        onClick={(e) => {
-                          console.log(e);
-                          reqUpdateMembers(
-                            session.user.id,
-                            role.id,
-                            router.query.id
-                          );
-                          createInvite(
-                            data.citizens.user_id,
-                            data.citizens.user_id,
-                            data.id,
-                            session.user.id
-                          );
-                        }}
-                      >
-                        {pageLabels.joinButton}
-                      </Button>
-                    </GridContainer>
-                  </GridItem>
-                );
-              })}
-            </GridContainer>
-          </Card>
-        </GridItem>
-        <GridItem xs={12} sm={12} md={12}>
-          <SectionComments className={classes.comment} />
-        </GridItem>
-      </GridContainer>
+                    );
+                  })}
+                </GridContainer>
+              </Card>
+            </GridItem>
+            <GridItem xs={12} sm={12} md={12}>
+              <SectionComments className={classes.comment} />
+            </GridItem>
+          </GridContainer>
+        </Fragment>
+      )}
     </MainLayout>
   );
 };

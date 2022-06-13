@@ -1,27 +1,15 @@
 import { useState, useEffect, useReducer } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, IconButton } from "@material-ui/core/";
-import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 //components
 import GridContainer from "../../../components/Grid/GridContainer";
 import GridItem from "../../../components/Grid/GridItem";
-import Button from "../../../components/CustomButtons/Button";
-import TagsContainer from "../../../components/Tags/TagsContainer";
-import CommonTag from "../../../components/Tags/commonTag/CommonTag";
+import CommonTag from "../../../components/Tags/CommonTag/CommonTag";
 import TagRoot from "../../../components/Tags/TagRoot";
 import Card from "../../../components/Card/Card";
-import CardBody from "../../../components/Card/CardBody";
-import CardFooter from "../../../components/Card/CardFooter";
-import CardHeader from "../../../components/Card/CardHeader";
-
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-
-import teamStyle from "../../../styles/jss/nextjs-material-kit/pages/landingPageSections/teamStyle.js";
 import ProfessionsLabel from "../../../components/Tags/Professions/ProfessionsLabel";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import GradeIcon from "@mui/icons-material/Grade";
-import Editor from "../../../components/Editors/CKEditorTextEditor";
 
 import Treasure from "../../../svg/contest/Treasure.svg";
 import moment from "moment";
@@ -31,6 +19,9 @@ import SectionComments from "../../comment/SectionComments";
 import styles from "../../../styles/jss/nextjs-material-kit/pages/overview/contestOverview";
 import { Box } from "@mui/system";
 import { useRouter } from "next/router";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import ModalTag from "../../../components/Tags/ModalTag/ModalTag";
 
 const pageLabels = {
   edittingButton: "수정",
@@ -43,6 +34,19 @@ const pageLabels = {
   contestTechStack: "기술 스택",
   prize: "원",
   content: "대회 상세 내용",
+};
+
+const reqDelete = async (id) => {
+  const result = await fetch(
+    `${process.env.HOSTNAME}/api/article/Contest/DELETE/${id}`,
+    {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    }
+  ).then((response) => {
+    return response.json();
+  });
+  return result;
 };
 
 const customStyles = makeStyles(styles);
@@ -97,41 +101,22 @@ const Overview = ({ article, contest, professions, handleEditing }) => {
               </GridItem>
             </GridContainer>
           </GridItem>
-          <GridItem xs={1} sm={1} md={1}>
-            <IconButton className={classes.iconMenuIcon}>
-              <MoreVertOutlinedIcon
-                aria-controls={open ? "fade-menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? "true" : undefined}
-                onClick={handleClick}
-              />
-            </IconButton>
-            <Menu
-              className={classes.menu}
-              MenuListProps={{
-                "aria-labelledby": "fade-button",
+          <GridItem xs={1} sm={1} md={1} className={classes.edidorContainer}>
+            <IconButton
+              onClickCapture={() => {
+                handleEditing();
               }}
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              TransitionComponent={Fade}
             >
-              <MenuItem
-                onClick={() => {
-                  handleEditing();
-                  handleClose();
-                }}
-              >
-                {pageLabels.edittingButton}
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  handleClose();
-                }}
-              >
-                {pageLabels.deleteButton}
-              </MenuItem>
-            </Menu>
+              <EditRoundedIcon />
+            </IconButton>
+            <IconButton
+              onClickCapture={() => {
+                reqDelete(router.query.id);
+                router.push("/contest");
+              }}
+            >
+              <DeleteRoundedIcon />
+            </IconButton>
           </GridItem>
           <GridItem>
             <GridContainer direction="row-reverse" justifyContent="flex-start">
@@ -218,11 +203,18 @@ const Overview = ({ article, contest, professions, handleEditing }) => {
                       {pageLabels.contestTechStack}
                     </GridItem>
                     <GridItem className={classes.overviewBody}>
-                      <TagsContainer
-                        tags={contest.tech_stack}
-                        type="TechStack"
-                        form="iconOnly"
-                      ></TagsContainer>
+                      <TagRoot>
+                        {contest.tech_stack.map((stack, index) => {
+                          return (
+                            <ModalTag
+                              name={stack.name}
+                              image={stack.image_url}
+                              description={stack.description}
+                              key={index}
+                            ></ModalTag>
+                          );
+                        })}
+                      </TagRoot>
                     </GridItem>
                   </GridContainer>
                 </GridItem>
@@ -232,11 +224,13 @@ const Overview = ({ article, contest, professions, handleEditing }) => {
         </GridContainer>
       </GridItem>
       <GridItem xs={12} sm={12} md={12}>
-        <Card className={classes.card}>
+        <Card className={classes.card + " " + classes.bodyCard}>
           <Typography className={classes.subTitle}>
             {pageLabels.content}
           </Typography>
-          <div className={classes.body}>{Parser(article.content.body)}</div>
+          <Typography className={classes.body}>
+            {Parser(article.content.body)}
+          </Typography>
         </Card>
       </GridItem>
       <GridItem>

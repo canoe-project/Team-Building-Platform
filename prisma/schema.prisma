@@ -480,7 +480,6 @@ model Tag {
   id          Int    @id @default(autoincrement())
   name        String @unique @db.Char(50)
   description String @db.Text
-  tag_color   String @db.Char(6)
 
   article Article[]
   team    Team[]

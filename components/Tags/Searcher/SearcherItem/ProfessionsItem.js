@@ -34,6 +34,7 @@ const styles = {
     height: "4rem",
     alignSelf: "center",
     borderRadius: "0.5rem",
+    padding: "1rem",
   },
   label: {
     marginTop: "0.5rem",
@@ -61,9 +62,7 @@ const RoleCard = ({ data, handle }) => {
   useEffect(() => {
     setLoading(false);
   }, []);
-  useEffect(() => {
-    console.log(data._source);
-  }, [data._source]);
+  useEffect(() => {}, [data._source]);
   if (loading) return <Fragment>Loading...</Fragment>;
   return (
     <GridItem

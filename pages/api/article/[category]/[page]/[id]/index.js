@@ -13,6 +13,7 @@ const handle = async (req, res) => {
       await updateArticle(req, res);
       return resolve();
     case "DELETE":
+      await deleteArticle(req, res);
       break;
     default:
       throw new Error(console.log(req.method));
@@ -81,7 +82,22 @@ const updateArticle = async (req, res) => {
   return resolve();
 };
 
-export default handle;
+const deleteArticle = async (req, res) => {
+  const id = req.query.id;
+  const category = req.query.category;
+
+  const { title, content, tag, include, ...rest } = req.body;
+
+  const whereQuery = {
+    article_id: parseInt(id),
+  };
+
+  const result = await prisma?.[`${category}Article`].delete({
+    where: whereQuery,
+  });
+  res.json(result);
+  resolve();
+};
 
 const articleIncludeOption = (type) => {
   switch (type) {
@@ -98,3 +114,5 @@ const articleIncludeOption = (type) => {
       throw new Error(console.log(type));
   }
 };
+
+export default handle;

@@ -9,7 +9,6 @@ import Title from "../../../../components/Input/Title";
 import Editor from "../../../../components/Editors/CKEditorTextEditor";
 import { Typography } from "@material-ui/core";
 import styles from "../../../../styles/jss/nextjs-material-kit/pages/published/teamCreate";
-import SectionHeaderImage from "../../../../pages-sections/contest/tabSections/SectionHeaderImage";
 import Searcher from "../../../../components/Tags/Searcher/Search";
 import RoleItem from "../../../../components/Tags/Searcher/SearcherItem/RoleItem";
 import RoleCard from "../../../../components/CustomCard/Role/RoleCard";
@@ -21,11 +20,16 @@ import { getSession, useSession, signIn, signOut } from "next-auth/react";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import moment from "moment";
 import { useRouter } from "next/router";
+import SectionHeaderImage from "../../../../pages-sections/headerImage/SectionHeaderImage";
+import createChannel from "../../../../components/StreamChat/createChannel";
+import SectionGenerateTagsImage from "../../../../pages-sections/tags/SectionGenerateTagsImage";
 const pageLabels = {
   roleLabel: "모집 분야",
   participantsLabel: "참여자",
   joinButton: "신청",
   placeholder: "제목 입력",
+  teamContent: "개요",
+  roleLabel: "모집 분야",
 };
 
 const articleOtion = {
@@ -97,7 +101,7 @@ const teamReducer = (prevState, action) => {
   }
 };
 
-const postTeamArticle = async (article, team, id) => {
+const postTeamArticle = async (owner, article, team, id, imageURL) => {
   const contestId = await fetch(
     `${process.env.HOSTNAME}/api/article/Contest/read/${id}/articleTo`,
     {
@@ -107,7 +111,6 @@ const postTeamArticle = async (article, team, id) => {
   ).then((response) => {
     return response.json();
   });
-
   const body = await {
     article: {
       create: {
@@ -128,7 +131,7 @@ const postTeamArticle = async (article, team, id) => {
         name: team.name,
         citizens: {
           connect: {
-            user_id: team.citizens,
+            user_id: owner,
           },
         },
         ...(team.role[0] !== undefined && {
@@ -151,14 +154,15 @@ const postTeamArticle = async (article, team, id) => {
     },
     contest: {
       connect: {
-        id: contestId.contest.id,
+        id: contestId.contest_id,
       },
     },
     citizens: {
       connect: {
-        user_id: team.citizens,
+        user_id: owner,
       },
     },
+    team_image_url: imageURL,
   };
   const data = await fetch(
     `${process.env.HOSTNAME}/api/article/Team/Post/${id}`,
@@ -170,6 +174,8 @@ const postTeamArticle = async (article, team, id) => {
   ).then((response) => {
     return response.json();
   });
+
+  return data;
 };
 
 const useStyles = makeStyles(styles);
@@ -182,6 +188,7 @@ const CreateTeam = ({ data }) => {
 
   const [article, articleDispatch] = useReducer(articleReducer, articleOtion);
   const [team, teamDispatch] = useReducer(teamReducer, teamOption);
+  const [imageURL, setImageURL] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(true);
@@ -221,10 +228,24 @@ const CreateTeam = ({ data }) => {
     const newRole = selectRole.filter((role) => role.name !== data.name);
     setSelectRole([...newRole, data]);
   };
+  const handleSelectRoleDelete = (name) => {
+    const newRole = selectRole.filter((role) => role.name !== name);
+    setSelectRole([...newRole]);
+  };
+
+  const handleImageURL = (url) => {
+    setImageURL(url);
+  };
   return (
     <MainLayout>
-      <SectionHeaderImage editing={editing} />
       <GridContainer direction="column">
+        <GridItem xs={12} sm={12} md={12}>
+          <SectionHeaderImage
+            editing={true}
+            category={"team"}
+            handleName={handleImageURL}
+          />
+        </GridItem>
         <GridItem className={classes.titleContain} xs={9} sm={9} md={9}>
           <GridContainer direction="column">
             <GridItem>
@@ -240,13 +261,17 @@ const CreateTeam = ({ data }) => {
         </GridItem>
         <GridItem>
           <Card className={classes.card}>
+            <Typography className={classes.subTitle}>
+              {pageLabels.teamContent}
+            </Typography>
             <Editor
               className={classes.body}
               onChangeHandle={handleContentBody}
             ></Editor>
           </Card>
         </GridItem>
-        <GridItem className={classes.subTitle}></GridItem>
+
+        <GridItem className={classes.subTitle}>{pageLabels.roleLabel}</GridItem>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <GridContainer direction="row">
@@ -265,7 +290,10 @@ const CreateTeam = ({ data }) => {
                         classes.overviewItem + " " + classes.borderRight
                       }
                     >
-                      <RoleCard role={role}></RoleCard>
+                      <RoleCard
+                        role={role}
+                        handle={handleSelectRoleDelete}
+                      ></RoleCard>
                     </GridItem>
                   );
                 })}
@@ -288,6 +316,13 @@ const CreateTeam = ({ data }) => {
                     basicQuery={"role"}
                     size={10}
                     handle={handleSelectRole}
+                    modal={
+                      <SectionGenerateTagsImage
+                        category={"role"}
+                        handl={handleSelectRole}
+                      />
+                    }
+                    modalLabel={"역할 생성"}
                   >
                     <RoleItem />
                   </Searcher>
@@ -301,8 +336,24 @@ const CreateTeam = ({ data }) => {
       <IconButton
         className={classes.createButton}
         onClickCapture={async () => {
-          handleTeamCitizens(session.user.id);
-          postTeamArticle(article, team, router.query.id);
+          const data = await postTeamArticle(
+            session.user.id,
+            article,
+            team,
+            router.query.id,
+            imageURL
+          ).then((data) => {
+            createChannel(
+              data.team_id,
+              team.name,
+              session.user.id,
+              session.user.id
+            );
+          });
+
+          router.push(
+            `${process.env.HOSTNAME}/contest/Read/${router.query.id}`
+          );
         }}
       >
         <SaveAltIcon

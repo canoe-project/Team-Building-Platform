@@ -2,6 +2,7 @@ import Searcher from "../components/Tags/Searcher/Search";
 import RoleItem from "../components/Tags/Searcher/SearcherItem/RoleItem";
 import ProfessionsItem from "../components/Tags/Searcher/SearcherItem/ProfessionsItem";
 import { Fragment } from "react";
+import SectionGenerateTags from "../pages-sections/tags/SectionGenerateTags";
 //   index, filed, basicQuery,
 const Index = () => {
   return (
@@ -20,6 +21,8 @@ const Index = () => {
         basicQuery={"professtion"}
         size={10}
         direction={"row"}
+        modal={<SectionGenerateTags category={"profession"} />}
+        modalLabel={"분야 생성"}
       >
         <ProfessionsItem></ProfessionsItem>
       </Searcher>

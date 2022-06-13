@@ -6,6 +6,9 @@ import Tag from "../../Tags/Tag";
 import Parser from "html-react-parser";
 import moment from "moment";
 import styles from "../../../styles/jss/nextjs-material-kit/pages/published/teamCreate";
+import { Typography, IconButton } from "@material-ui/core";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+
 const pageLabels = {
   contestBodyLabel: "개요",
   techStackLabel: "기술 스택",
@@ -14,12 +17,21 @@ const pageLabels = {
 
 const useStyles = makeStyles(styles);
 
-const RoleCard = ({ role }) => {
+const RoleCard = ({ role, handle }) => {
   const classes = useStyles();
 
   useEffect(() => {}, []);
   return (
     <GridContainer direction="column" className={classes.overview}>
+      <IconButton
+        className={classes.deleteIcon}
+        {...(handle === undefined
+          ? {}
+          : { onClickCapture: () => handle(role.name) })}
+      >
+        <CloseRoundedIcon />
+      </IconButton>
+
       <GridItem xs={7} sm={7} md={7} className={classes.overviewBody}>
         <Tag
           name={role.name}
@@ -32,7 +44,7 @@ const RoleCard = ({ role }) => {
         </Tag>
       </GridItem>
       <GridItem className={classes.subTitle + " " + classes.cardFooter}>
-        <span>{pageLabels.participantsLabel}</span>
+        <Typography>{pageLabels.participantsLabel}</Typography>
       </GridItem>
     </GridContainer>
   );

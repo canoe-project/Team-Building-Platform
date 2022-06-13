@@ -11,6 +11,7 @@ const cardHeaderStyle = {
     borderRadius: "3px",
     // padding: "1rem 15px",
     marginLeft: "15px",
+    marginTop: "15px",
     marginRight: "15px",
     border: "0",
     marginBottom: "0",

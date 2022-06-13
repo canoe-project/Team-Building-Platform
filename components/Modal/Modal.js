@@ -1,12 +1,13 @@
-import * as React from "react";
+import { Fragment } from "react";
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import { makeStyles } from "@material-ui/core/styles";
 
-const style = {
+const boxStyle = {
   position: "absolute",
   top: "50%",
   left: "50%",
@@ -15,16 +16,12 @@ const style = {
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
+  borderRadius: "1rem",
 };
 
-export default function TransitionsModal({
-  children,
-  title,
-  open,
-  handleModalClose,
-}) {
+export default function TransitionsModal({ children, open, handleModalClose }) {
   return (
-    <div>
+    <Fragment>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -37,14 +34,9 @@ export default function TransitionsModal({
         }}
       >
         <Fade in={open}>
-          <Box sx={style}>
-            <Typography id="transition-modal-title" variant="h6" component="h2">
-              {title}
-            </Typography>
-            {children}
-          </Box>
+          <Box sx={boxStyle}>{children}</Box>
         </Fade>
       </Modal>
-    </div>
+    </Fragment>
   );
 }

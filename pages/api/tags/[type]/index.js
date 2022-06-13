@@ -4,7 +4,7 @@ import prisma from "../../../../utilities/prisma/client";
 const handle = async (req, res) => {
   switch (req.method) {
     case "GET":
-      return findTags(req, res);
+      return await findTags(req, res);
     case "POST":
       break;
     case "PUT":
@@ -17,8 +17,11 @@ const handle = async (req, res) => {
 };
 
 const findTags = async (req, res) => {
-  const { type } = req.query;
-  const result = await prisma?.[type].findMany({});
+  const { type, select } = req.query;
+
+  const result = await prisma?.[type].findMany({
+    ...(select !== undefined && { select: { [select]: true, name: true } }),
+  });
   res.json(result);
   resolve();
 };

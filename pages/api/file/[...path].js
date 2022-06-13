@@ -28,11 +28,9 @@ app.use(upload.array("file"), function async(req, res) {
 
   fs.rename(oldPath, newPath, function (err) {
     if (err) throw err;
-    res.json(newPath);
-    return resolve;
+    return res.json(newPath);
+    resolve();
   });
-  res.json(newPath);
-  return resolve;
 });
 
 export default app;

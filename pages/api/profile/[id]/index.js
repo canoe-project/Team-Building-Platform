@@ -2,7 +2,6 @@ import { resolve } from "path";
 import prisma from "../../../../utilities/prisma/client";
 
 const handle = async (req, res) => {
-  console.log(req.method);
   switch (req.method) {
     case "GET":
       await findProfilePage(req, res);

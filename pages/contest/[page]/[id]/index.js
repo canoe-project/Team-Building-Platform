@@ -66,43 +66,46 @@ const BasicTabs = ({ data }) => {
   if (loading) return <div>Loading...</div>;
   return (
     <MainLayout>
-      <GridContainer direction="column" className={classes.contestHead}>
-        <GridItem>
-          <ContestHeaderImage
-            editing={editing}
-            contestImage={data.constest_image_url}
-          />
-        </GridItem>
-        <GridItem>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            aria-label="basic tabs example"
-          >
-            <Tab label="개요" {...a11yProps(0)} />
-            <Tab label="팀" {...a11yProps(1)} />
-          </Tabs>
-        </GridItem>
-      </GridContainer>
-      <TabPanel value={value} index={0}>
-        {editing ? (
-          <ContestPublished
-            articleValue={{ ...data.article }}
-            contestValue={{ ...data.contest }}
-            handleEditing={handleEditing}
-          />
-        ) : (
-          <ContestOverview
-            article={data.article}
-            contest={data.contest}
-            professions={data.contest.profession}
-            handleEditing={handleEditing}
-          />
-        )}
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <TeamList contest={data.contest_id} />
-      </TabPanel>
+      {editing ? (
+        <ContestPublished
+          articleValue={{ ...data.article }}
+          contestValue={{ ...data.contest }}
+          imageURLValue={data.constest_image_url}
+          handleEditing={handleEditing}
+        />
+      ) : (
+        <Fragment>
+          <GridContainer direction="column" className={classes.contestHead}>
+            <GridItem>
+              <ContestHeaderImage
+                editing={editing}
+                contestImage={data?.constest_image_url}
+              />
+            </GridItem>
+            <GridItem>
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="basic tabs example"
+              >
+                <Tab label="개요" {...a11yProps(0)} />
+                <Tab label="팀" {...a11yProps(1)} />
+              </Tabs>
+            </GridItem>
+          </GridContainer>
+          <TabPanel value={value} index={0}>
+            <ContestOverview
+              article={data.article}
+              contest={data.contest}
+              professions={data.contest.profession}
+              handleEditing={handleEditing}
+            />
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <TeamList contest={data.contest_id} />
+          </TabPanel>
+        </Fragment>
+      )}
     </MainLayout>
   );
 };

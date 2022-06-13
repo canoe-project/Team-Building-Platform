@@ -6,7 +6,7 @@ import { getSession, useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import classNames from "classnames";
 import { makeStyles } from "@material-ui/core/styles";
-
+import Box from "@material-ui/core/Box";
 const reqComments = async (id) => {
   const data = await fetch(`${process.env.HOSTNAME}/api/comment/${id}`, {
     method: "GET",
@@ -36,7 +36,7 @@ const SectionComments = ({ className }) => {
 
   if (loading) return <div>loading</div>;
   return (
-    <div className={className}>
+    <Box className={className}>
       <CommentInput />
       <CommentContainer>
         {comments.map((data) => {
@@ -59,7 +59,7 @@ const SectionComments = ({ className }) => {
           );
         })}
       </CommentContainer>
-    </div>
+    </Box>
   );
 };
 

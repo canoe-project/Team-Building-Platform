@@ -13,7 +13,7 @@ import Editor from "../../../components/Editors/CKEditorTextEditor";
 import Treasure from "../../../svg/contest/Treasure.svg";
 import moment from "moment";
 import styles from "../../../styles/jss/nextjs-material-kit/pages/overview/contestOverview";
-import { Typography, TextField, IconButton } from "@material-ui/core";
+import { Typography, TextField, IconButton, Grow } from "@material-ui/core";
 import TimePicker from "../../../components/TimePicker/TimePicker";
 
 import Searcher from "../../../components/Tags/Searcher/Search";
@@ -23,8 +23,17 @@ import ProfessionsItem from "../../../components/Tags/Searcher/SearcherItem/Prof
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import palettes from "../../../styles/nextjs-material-kit/palettes";
 import { getSession, useSession, signIn, signOut } from "next-auth/react";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import SectionHeaderImage from "../../../pages-sections/headerImage/SectionHeaderImage";
+import TagItem from "../../../components/Tags/Searcher/SearcherItem/TagItem";
+
 import { useRouter } from "next/router";
+import CommonTag from "../../../components/Tags/CommonTag/CommonTag";
+import TagRoot from "../../../components/Tags/TagRoot";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import MainLayout from "../../../components/Layout/MainLayout";
+import SectionGenerateTags from "../../../pages-sections/tags/SectionGenerateTags";
+import SectionGenerateTagsImage from "../../../pages-sections/tags/SectionGenerateTagsImage";
+
 const pageLabels = {
   edittingButton: "수정",
   deleteButton: "삭제",
@@ -139,11 +148,22 @@ const contestReducer = (prevState, action) => {
   }
 };
 
-const reqUpdate = async (article, contest, techStack, professtion, id) => {
+const reqUpdate = async (
+  article,
+  contest,
+  techStack,
+  professtion,
+  id,
+  imageURL,
+  tag
+) => {
   const init = {
     contest: {
       update: {
         tech_stack: {
+          set: [],
+        },
+        Tag: {
           set: [],
         },
       },
@@ -151,6 +171,7 @@ const reqUpdate = async (article, contest, techStack, professtion, id) => {
     include: {
       contest: {
         tech_stack: true,
+        Tag: true,
       },
     },
   };
@@ -177,18 +198,11 @@ const reqUpdate = async (article, contest, techStack, professtion, id) => {
         end_period: contest.end_period,
         start_period: contest.start_period,
         createAt: contest.createAt,
-        ...(contest.Tag[0] !== undefined && {
+        ...(tag[0] !== undefined && {
           Tag: {
-            connectOrCreate: contest.Tag.map((t) => {
+            connect: tag.map((t) => {
               return {
-                where: {
-                  name: t.name,
-                },
-                create: {
-                  name: t.name,
-                  description: "",
-                  tag_color: "",
-                },
+                name: t.name,
               };
             }),
           },
@@ -196,7 +210,6 @@ const reqUpdate = async (article, contest, techStack, professtion, id) => {
         ...(techStack[0] !== undefined && {
           tech_stack: {
             connect: techStack.map((stack) => {
-              console.log(stack);
               return {
                 name: stack.name,
               };
@@ -212,7 +225,9 @@ const reqUpdate = async (article, contest, techStack, professtion, id) => {
         }),
       },
     },
+    constest_image_url: imageURL,
   };
+
   const initData = await fetch(
     `${process.env.HOSTNAME}/api/article/Contest/Put/${id}`,
     {
@@ -223,8 +238,6 @@ const reqUpdate = async (article, contest, techStack, professtion, id) => {
   ).then((response) => {
     return response.json();
   });
-  console.log("init");
-  console.log(initData);
   const data = await fetch(
     `${process.env.HOSTNAME}/api/article/Contest/Put/${id}`,
     {
@@ -235,11 +248,15 @@ const reqUpdate = async (article, contest, techStack, professtion, id) => {
   ).then((response) => {
     return response.json();
   });
-  console.log(data);
 };
 
 const customStyles = makeStyles(styles);
-const Overview = ({ articleValue, contestValue, handleEditing }) => {
+const Overview = ({
+  articleValue,
+  contestValue,
+  imageURLValue,
+  handleEditing,
+}) => {
   const router = useRouter();
   const { data: session, status } = useSession();
 
@@ -250,7 +267,9 @@ const Overview = ({ articleValue, contestValue, handleEditing }) => {
 
   const [article, articleDispatch] = useReducer(articleReducer, articleOtion);
   const [contest, contestDispatch] = useReducer(contestReducer, contestOption);
+  const [imageURL, setImageURL] = useState(null);
 
+  const [selectTag, setSelectTag] = useState([]);
   const [selectTechStack, setTechStack] = useState([]);
   const [selectProfesstion, setProfesstion] = useState([
     {
@@ -268,6 +287,8 @@ const Overview = ({ articleValue, contestValue, handleEditing }) => {
       contestDispatch({ type: "init", result: contestValue }),
       setTechStack(contestValue.tech_stack),
       setProfesstion([contestValue.profession[0]]),
+      setSelectTag(contestValue.Tag),
+      setImageURL(imageURLValue),
     ]).then(() => {
       setLoading(false);
     });
@@ -278,7 +299,8 @@ const Overview = ({ articleValue, contestValue, handleEditing }) => {
       contestDispatch({ type: "init", result: contestValue }),
       setTechStack(contestValue.tech_stack),
       setProfesstion([contestValue.profession[0]]),
-      console.log(contestValue.tech_stack)
+      setSelectTag(contestValue.Tag),
+      setImageURL(imageURLValue),
     ]).then(() => {
       setLoading(false);
     });
@@ -298,6 +320,16 @@ const Overview = ({ articleValue, contestValue, handleEditing }) => {
     );
     setTechStack([...newTechStack]);
   };
+
+  const handleTag = (data) => {
+    const newTag = selectTag.filter((tag) => tag.name !== data.name);
+    setSelectTag([...newTag, data]);
+  };
+  const handleTagDelete = (name) => {
+    const newTag = selectTag.filter((tag) => tag.name !== name);
+    setSelectTag([...newTag]);
+  };
+
   const handleArticleTitleChange = (data) => {
     articleDispatch({ type: "contentTitle", result: data.target.value });
   };
@@ -325,17 +357,19 @@ const Overview = ({ articleValue, contestValue, handleEditing }) => {
   // const handleTagAppender = (data) => {
   //   contestDispatch({ type: "contestTag", result: data.target.value });
   // };
-
+  const handle = (url) => {
+    setImageURL(url);
+  };
   const handlePublished = async () => {
     await reqUpdate(
       article,
       contest,
       selectTechStack,
       selectProfesstion,
-      router.query.id
-      // tag
+      router.query.id,
+      imageURL,
+      selectTag
     );
-    handleEditing();
   };
 
   if (loading) return <div>Loading...</div>;
@@ -343,6 +377,14 @@ const Overview = ({ articleValue, contestValue, handleEditing }) => {
   return (
     <Fragment>
       <GridContainer direction="column" spacing={3}>
+        <GridItem xs={12} sm={12} md={12}>
+          <SectionHeaderImage
+            editing={true}
+            category={"contest"}
+            contestImage={imageURLValue}
+            handleName={handle}
+          />
+        </GridItem>
         <GridItem xs={12} sm={12} md={12}>
           <GridContainer direction="row">
             <GridItem xs={1} sm={1} md={1}>
@@ -354,6 +396,13 @@ const Overview = ({ articleValue, contestValue, handleEditing }) => {
                   size={12}
                   direction={"row"}
                   handle={handleProfesstion}
+                  modal={
+                    <SectionGenerateTagsImage
+                      category={"profession"}
+                      handle={handleProfesstion}
+                    />
+                  }
+                  modalLabel={"분야 생성"}
                 >
                   <ProfessionsItem />
                 </Searcher>
@@ -371,11 +420,34 @@ const Overview = ({ articleValue, contestValue, handleEditing }) => {
                   <Typography>{moment().format("YYYY.MM.DD")}</Typography>
                 </GridItem>
                 <GridItem>
-                  {/* <TagsContainer
-                  tags={contest.Tag}
-                  type={"Tag"}
-                  form={"textOnly"}
-                /> */}
+                  <TagRoot>
+                    {selectTag.map((tag) => {
+                      return (
+                        <CommonTag
+                          name={tag.name}
+                          icon={CloseRoundedIcon}
+                          handleDelete={handleTagDelete}
+                        ></CommonTag>
+                      );
+                    })}
+                    <Searcher
+                      index={"tag_index"}
+                      filed={["name", "description", "type"]}
+                      basicQuery={"tag"}
+                      size={12}
+                      direction={"column"}
+                      handle={handleTag}
+                      modal={
+                        <SectionGenerateTags
+                          category={"tag"}
+                          handle={handleTag}
+                        />
+                      }
+                      modalLabel={"태그 생성"}
+                    >
+                      <TagItem />
+                    </Searcher>
+                  </TagRoot>
                 </GridItem>
               </GridContainer>
             </GridItem>
@@ -531,6 +603,13 @@ const Overview = ({ articleValue, contestValue, handleEditing }) => {
                               size={12}
                               direction={"row"}
                               handle={handleTechStack}
+                              modal={
+                                <SectionGenerateTagsImage
+                                  category={"techStack"}
+                                  handle={handleTechStack}
+                                />
+                              }
+                              modalLabel={"기술 스택 생성"}
                             >
                               <TechStackItem />
                             </Searcher>
@@ -560,7 +639,9 @@ const Overview = ({ articleValue, contestValue, handleEditing }) => {
       <IconButton
         className={classes.createButton}
         onClickCapture={async () => {
-          await handlePublished();
+          await handlePublished().then(() => {
+            router.reload(window.location.pathname);
+          });
         }}
       >
         <SaveAltIcon
