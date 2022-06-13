@@ -5,8 +5,9 @@ import { useState, useEffect, useReducer, Fragment } from "react";
 import { getSession, useSession, signIn, signOut } from "next-auth/react";
 import classNames from "classnames";
 import { makeStyles } from "@material-ui/core/styles";
-import { TextField } from "@material-ui/core";
+import { TextField, IconButton } from "@material-ui/core";
 import { Box } from "@material-ui/core";
+import SendIcon from "@mui/icons-material/Send";
 const reqCommentPost = async (articleID, comment, userId) => {
   const body = {
     comment: {
@@ -64,7 +65,7 @@ const CommentInput = ({ className }) => {
         }}
         fullWidth
       ></TextField>
-      <Button
+      <IconButton
         onClick={async () => {
           await reqCommentPost(router.query.id, comment, session.user.id).then(
             () => {
@@ -73,8 +74,8 @@ const CommentInput = ({ className }) => {
           );
         }}
       >
-        버튼
-      </Button>
+        <SendIcon />
+      </IconButton>
     </Box>
   );
 };
