@@ -9,12 +9,12 @@ import TagContainer from "../../Tags/TagsContainer";
 import { makeStyles } from "@material-ui/core/styles";
 import Link from "next/link";
 import Parser from "html-react-parser";
-import GridContainer from "../../Grid/GridContainer";
+import GridContainer from "../../Grid/GridContainer2";
 import Editor from "../../Editors/CKEditorTextEditor";
 
 const styles = {
   card: {
-    width: "auto",
+    width: "30%",
     height: "100%",
   },
 };
@@ -67,7 +67,7 @@ const PartnerCard = (props) => {
               <Typography>&nbsp;</Typography>
               <Divider />
               <h3>
-                <li>기술스택</li>
+                <li>기술 스택</li>
               </h3>
               <TagContainer
                 tags={contestID.tech_stack}

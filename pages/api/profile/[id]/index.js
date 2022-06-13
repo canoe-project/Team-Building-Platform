@@ -48,7 +48,8 @@ const findProfilePage = async (req, res) => {
           resume: true,
           contest: {
             include: {
-              profession : true
+              profession : true,
+              tech_stack: true
             },
           },
         },
