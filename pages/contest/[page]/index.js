@@ -23,6 +23,9 @@ import Button from "../../../components/CustomButtons/Button";
 import Searcher from "../../../components/Tags/Searcher/Search";
 import ProfessionsItem from "../../../components/Tags/Searcher/SearcherItem/ProfessionsItem";
 import SearchChip from "../../../components/Tags/Searcher/SearcherButton/SearchChip";
+
+import ContestArt from "../../../svg/contest/contestArt.svg";
+import { set } from "date-fns";
 const pageLabels = {
   professionFilter: "분야",
   contestCreateButtonLabel: "대회 생성 하기",
@@ -31,8 +34,8 @@ const pageLabels = {
   highPrice: "상금순",
   lowPrice: "낮은 가격순",
   topTag: "인기 태그",
-  headCopy: "headCopy",
-  subCopy: "subCopy",
+  headCopy: "대회",
+  subCopy: "새로운 여정을 찾아보세요!",
 };
 
 const styled = {
@@ -42,7 +45,7 @@ const styled = {
     paddingBottom: "4rem",
   },
   createCard: {
-    height: "20rem",
+    padding: "2.5rem",
   },
   headerCardFooter: {
     marginTop: "auto",
@@ -51,6 +54,11 @@ const styled = {
     right: "1rem",
     bottom: "1rem",
     position: "absolute",
+
+    backgroundColor: palettes.hotPink,
+    "&:hover": {
+      background: palettes.darkPink1,
+    },
   },
   listItem: {
     padding: "4rem",
@@ -69,9 +77,43 @@ const styled = {
   filterGridItem: {
     flexDirection: "row-reverse",
   },
+  art: {
+    position: "absolute",
+    right: "1rem",
+  },
+  headCopy: {
+    color: palettes.darkBlue2,
+    fontFamily: "Do Hyeon",
+    fontSize: "2.5rem",
+  },
+  subCopyContainer: {},
+  subCopy: {
+    color: palettes.darkBlue,
+    fontFamily: "Do Hyeon",
+    fontSize: "1.25rem",
+    maxWidth: "80%",
+  },
+  copy: {
+    marginTop: "2rem",
+    fontSize: "1.125rem",
+    fontFamily: "SCDream4",
+    fontWeight: "bold",
+    fontSize: "1.125rem",
+  },
 };
 
 const useStyles = makeStyles(styled);
+
+const reqTagDescription = async (tagName) => {
+  const tag = await fetch(`${process.env.HOSTNAME}/api/tags/Tag/${tagName}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  }).then(async (response) => {
+    return await response.json();
+  });
+  console.log(tag.description);
+  return tag.description;
+};
 
 export default function CompetitionSearchPage({
   data,
@@ -86,8 +128,10 @@ export default function CompetitionSearchPage({
   const [sort, setSort] = useState(undefined);
   const [prize, setPrize] = useState(undefined);
   const [loading, setLoading] = useState(true);
-
+  const [description, setDescription] = useState("");
+  const [tag, setTag] = useState(undefined);
   useEffect(() => {
+    setTag(router.query.tag);
     setCurrentPage(router.query.page, setLoading(false));
   }, []);
 
@@ -170,6 +214,14 @@ export default function CompetitionSearchPage({
     );
   }, [prize]);
 
+  useEffect(() => {
+    if (tag !== undefined) {
+      reqTagDescription(tag).then((data) => {
+        setDescription(data);
+      });
+    }
+  }, [tag]);
+
   const handlecontestCreate = () => {
     router.push(`/contest/create`);
   };
@@ -190,6 +242,7 @@ export default function CompetitionSearchPage({
   };
   const reqTag = (tagName) => {
     if (tagName !== undefined) {
+      setTag(tagName);
       router.push(`/contest/1?tag=${tagName}`);
     }
   };
@@ -199,13 +252,26 @@ export default function CompetitionSearchPage({
       <GridContainer direction="column">
         <GridItem xs={12} sm={12} md={12}>
           <Card className={classes.createCard}>
-            <CardHeader>
-              <Typography>{pageLabels.headCopy}</Typography>
-            </CardHeader>
-            <CardBody>
-              <Typography>{pageLabels.subCopy}</Typography>
+            <ContestArt className={classes.art} width={300} height={240} />
+            <CardBody className={classes.subCopyContainer}>
+              <Typography className={classes.headCopy}>
+                {tag === undefined ? pageLabels.headCopy : tag}
+              </Typography>
+              <Typography className={classes.subCopy}>
+                {tag === undefined ? pageLabels.subCopy : description}
+              </Typography>
+              <Typography className={classes.copy}>
+                {pageLabels.topTag}
+              </Typography>
+              <TagRoot>
+                {topTag.map((tag) => {
+                  return (
+                    <CommonTag name={tag.name} handle={reqTag}></CommonTag>
+                  );
+                })}
+              </TagRoot>
             </CardBody>
-            <CardFooter>
+            <CardFooter className={classes.headerCardFooter}>
               <Button
                 className={classes.createCardButton}
                 onClick={() => {
@@ -215,14 +281,6 @@ export default function CompetitionSearchPage({
                 {pageLabels.contestCreateButtonLabel}
               </Button>
             </CardFooter>
-            <Typography className={classes.headerCardFooter}>
-              {pageLabels.topTag}
-            </Typography>
-            <TagRoot>
-              {topTag.map((tag) => {
-                return <CommonTag name={tag.name} handle={reqTag}></CommonTag>;
-              })}
-            </TagRoot>
           </Card>
         </GridItem>
         <GridItem xs={12} sm={12} md={12} className={classes.filterGridItem}>

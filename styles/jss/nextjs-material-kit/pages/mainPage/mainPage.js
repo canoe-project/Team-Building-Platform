@@ -13,7 +13,6 @@ const mainPageStyle = {
     left: "0px",
     marginLeft: "11.25rem",
   },
-  mainArt: {},
   headCopy: {
     color: palettes.darkBlue2,
     fontFamily: "Do Hyeon",

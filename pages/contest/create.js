@@ -24,7 +24,7 @@ import palettes from "../../styles/nextjs-material-kit/palettes";
 import moment from "moment";
 import { getSession, useSession, signIn, signOut } from "next-auth/react";
 import SectionHeaderImage from "../../pages-sections/headerImage/SectionHeaderImage";
-
+import { useRouter } from "next/router";
 import CommonTag from "../../components/Tags/CommonTag/CommonTag";
 import TagRoot from "../../components/Tags/TagRoot";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
@@ -227,7 +227,7 @@ const reqUpdate = async (
 const customStyles = makeStyles(styles);
 const Overview = () => {
   const { data: session, status } = useSession();
-
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const classes = customStyles();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -569,7 +569,9 @@ const Overview = () => {
       <IconButton
         className={classes.createButton}
         onClickCapture={async () => {
-          await handlePublished();
+          await handlePublished().then(() => {
+            router.push(`${process.env.HOSTNAME}/contest/`);
+          });
         }}
       >
         <SaveAltIcon

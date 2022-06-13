@@ -6,7 +6,6 @@ import GridItem from "../components/Grid/GridItem";
 import mainPageStyle from "../styles/jss/nextjs-material-kit/pages/mainPage/mainPage";
 import { makeStyles } from "@material-ui/core/styles";
 import CompetitionChat from "../components/Visualizations/competitionChat/CompetitionChat";
-import Image from "next/image";
 import { Button } from "@material-ui/core";
 const useStyles = makeStyles(mainPageStyle);
 
@@ -54,8 +53,7 @@ export default function MainPage() {
       setLoading(false);
     });
   }, []);
-  useEffect(() => {
-  }, [competitionRank]);
+  useEffect(() => {}, [competitionRank]);
   const handleRank = (data) => {
     setCompetitionRank(data);
   };
