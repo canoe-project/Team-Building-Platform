@@ -55,10 +55,9 @@ const CompetitionChat = ({ className, handle, value, ...rest }) => {
   const scale = useRef(0);
   const classes = useStyles();
   const svgRef = React.createRef();
-  const [currentPoint, setCurrentPoint] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    if (svgRef.current) {
+    if (svgRef.current && value?.length !== 0) {
       const svg = d3.select(svgRef.current).select("svg");
       const mountainLine = svg.select("#mountainLine");
       const mountainPoints = svg.select("#mountainLine").attr("d");
@@ -126,7 +125,9 @@ const CompetitionChat = ({ className, handle, value, ...rest }) => {
           });
 
         text
-          .text(`${currentText}명의 팀이 경쟁중!`)
+          .text(
+            `${currentText === undefined ? "" : currentText}명의 팀이 경쟁중!`
+          )
           .transition(function (d, i) {
             return i * 1000;
           })
