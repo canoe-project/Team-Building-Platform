@@ -12,11 +12,15 @@ import Parser from "html-react-parser";
 
 import GridContainer from "../../Grid/GridContainer2";
 import Editor from "../../Editors/CKEditorTextEditor";
+import GridItem from "../../Grid/GridItem";
 
 const styles = {
   card: {
-    width: "30%",
+    width: "100%",
     height: "100%",
+  },
+  left: {
+    width: "auto",
   },
 };
 
@@ -33,8 +37,6 @@ const PartnerCard = (props) => {
     setLoading(false);
   }, []);
 
-
-
   if (loading) return <Fragment>Loading...</Fragment>;
   return (
     <Link
@@ -43,8 +45,8 @@ const PartnerCard = (props) => {
       passHref
     >
       <Card className={classes.card + " " + className}>
-        <GridContainer direction="row" spacing={2} xs={12} sm={12} md={12}>
-          <CardActionArea>
+        <GridContainer direction={"row"}>
+          <GridItem xs={8} sm={8} md={8} className={classes.left}>
             <CardContent>
               <CardHeader
                 avatar={
@@ -61,24 +63,21 @@ const PartnerCard = (props) => {
                 titleTypographyProps={{ fontSize: 20, color: "#00adb5" }}
               />
               <Divider />
-              <Typography>&nbsp;</Typography>
               <Typography>
                 {contestID.profile.content !== null
                   ? Parser(contestID.profile.content)
                   : null}
               </Typography>
-              <Typography>&nbsp;</Typography>
-              <Divider />
-              <h3>
-                <li>기술 스택</li>
-              </h3>
-              <TagContainer
-                tags={contestID.tech_stack}
-                type={"TechStack"}
-                form={"iconOnly"}
-              />
             </CardContent>
-          </CardActionArea>
+          </GridItem>
+          <GridItem xs={4} sm={4} md={4}>
+            <Typography>기술 스택</Typography>
+            <TagContainer
+              tags={contestID.tech_stack}
+              type={"TechStack"}
+              form={"iconOnly"}
+            />
+          </GridItem>
         </GridContainer>
       </Card>
     </Link>
