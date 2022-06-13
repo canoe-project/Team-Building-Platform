@@ -9,6 +9,7 @@ import TagContainer from "../../Tags/TagsContainer";
 import { makeStyles } from "@material-ui/core/styles";
 import Link from "next/link";
 import Parser from "html-react-parser";
+
 import GridContainer from "../../Grid/GridContainer2";
 import Editor from "../../Editors/CKEditorTextEditor";
 
@@ -31,6 +32,8 @@ const PartnerCard = (props) => {
   useEffect(() => {
     setLoading(false);
   }, []);
+
+
 
   if (loading) return <Fragment>Loading...</Fragment>;
   return (

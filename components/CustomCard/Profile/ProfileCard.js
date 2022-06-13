@@ -87,7 +87,6 @@ const ContestCard = (props) => {
           "rgba(128, 0, 128, 1)",
           "rgba(0, 128, 128, 1)",
           "rgba(128, 128, 128, 1)",
-          "rgba(128, 255, 128, 1)",
         ],
         fill: true
       }
