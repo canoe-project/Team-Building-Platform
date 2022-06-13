@@ -2,7 +2,7 @@ import Link from "next/link";
 import Card from "../../../components/CustomCard/Partner/PartnerCard";
 import css from "styled-jsx/css";
 import React, { useEffect, useState } from "react";
-import { Pie } from "react-chartjs-2";
+import { Pie, Bar, PolarArea } from "react-chartjs-2";
 import 'chart.js/auto';
 import GridContainer from "../../../components/Grid/GridContainer";
 import GridItem from "../../../components/Grid/GridItem";
@@ -62,6 +62,71 @@ export default function CompetitionSearchPage({ data }) {
     ]
   }
 
+  let usersAttentionProfessionData = {
+    labels: [],
+    datasets: [
+      {
+        backgroundColor: [
+          '#d9ed92',
+          '#b5e48c',
+          '#99d98c',
+          '#76c893',
+          '#52b69a',
+          '#34a0a4',
+          '#168aad',
+          '#1a759f',
+          '#1e6091',
+          '#184e77',
+          '#002855',
+          '#001845',
+          '#001233',
+          '#33415c',
+          '#5c677d',
+          '#7d8597',
+        ],
+        data: [],
+        fill: true,
+        borderWidth: 1,
+      }
+    ]
+  }
+
+  let usersTechStackData = {
+    labels: [],
+    datasets: [
+      {
+        data: [],
+        backgroundColor: [
+          '#606c38',
+          '#283618',
+          '#fefae0',
+          '#dda15e',
+          '#bc6c25',
+          '#cdb4db',
+          '#ffc8dd',
+          '#ffafcc',
+          '#bde0fe',
+          '#a2d2ff',
+          '#ffbe0b',
+          '#fb5607',
+          '#ff006e',
+          '#8338ec',
+          '#3a86ff',
+          '#000000',
+          '#14213d',
+          '#fca311',
+          '#e5e5e5',
+          '#edede9',
+          '#d6ccc2',
+          '#f5ebe0',
+          '#e3d5ca',
+          '#d5bdaf',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
   let i = 0;
   let ii = 0;
   let iii = 0;
@@ -87,6 +152,57 @@ export default function CompetitionSearchPage({ data }) {
     }
   }
 
+  i = 0;
+  ii = 0;
+  iii = 0;
+  existence = 0;
+  
+  for (; i < data.length; i++) {
+    ii = 0;
+    if (data[i].user_attention_profession.length !== 0) {
+      for (; ii < data[i].user_attention_profession[0].profession.length; ii++) {
+        iii = 0;
+        existence = 0;
+        for (; iii < usersAttentionProfessionData.labels.length; iii++) {
+          if (usersAttentionProfessionData.labels[iii] == data[i].user_attention_profession[0].profession[ii].name) {
+            usersAttentionProfessionData.datasets[0].data[iii] += 1;
+            existence = 1;
+            break;
+          }
+        }
+        if (existence == 0) {
+         
+          usersAttentionProfessionData.labels.push(data[i].user_attention_profession[0].profession[ii].name);
+          usersAttentionProfessionData.datasets[0].data.push(1);
+        }
+      }
+    }
+  }
+
+  i = 0;
+  ii = 0;
+  iii = 0;
+  existence = 0;
+
+  for (; i < data.length; i++) {
+    ii = 0;
+    for (; ii < data[i].tech_stack.length; ii++) {
+      iii = 0;
+      existence = 0;
+      for (; iii < usersTechStackData.labels.length; iii++) {
+        if (usersTechStackData.labels[iii] == data[i].tech_stack[ii].name) {
+          usersTechStackData.datasets[0].data[iii] += 1;
+          existence = 1;
+          break;
+        }
+      }
+      if (existence == 0) {
+        usersTechStackData.labels.push(data[i].tech_stack[ii].name);
+        usersTechStackData.datasets[0].data.push(1);
+      }
+    }
+  }
+
 
   return (
     <MainLayout>
@@ -100,18 +216,52 @@ export default function CompetitionSearchPage({ data }) {
           width="200px"
           options={{
             maintainAspectRatio: false,
-            legend:{
-              display:true,
-              position:'right'
-            },
+
             plugins: {
               title: {
                 display: true,
                 text: '유저들의 관련 분야 통계'
-              }
+              },
             }
           }}
         />
+            </GridItem>
+            <GridItem>
+            <Bar
+        data={usersAttentionProfessionData}
+        height="200px"
+        width="200px"
+        options={{
+          maintainAspectRatio: false,
+
+          plugins: {
+            title: {
+              display: true,
+              text: '유저들의 관심있는 분야 통계'
+            },
+            legend: {
+              display: false,
+            },
+          }
+        }}
+      />
+            </GridItem>
+            <GridItem>
+            <PolarArea 
+            data={usersTechStackData}
+            height="300px"
+            width="300px"
+            options={{
+              maintainAspectRatio: false,
+  
+              plugins: {
+                title: {
+                  display: true,
+                  text: '유저들의 기술 스택 통계'
+                },
+              }
+            }} 
+            />
             </GridItem>
           </GridContainer>
         </GridItem>

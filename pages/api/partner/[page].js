@@ -12,7 +12,12 @@ const findPartnerPage = async (req, res) => {
           user:true,
           tech_stack:true,
           profession:true,
-          profile:true
+          profile:true,
+          user_attention_profession: {
+            include: {
+              profession: true,
+            },
+          },
       }
     });
   
