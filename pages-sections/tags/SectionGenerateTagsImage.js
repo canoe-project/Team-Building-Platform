@@ -48,7 +48,6 @@ const styles = {
     color: " #414141",
     borderBottom: "0.35rem solid #414141",
     paddingBottom: "1rem",
-    marginBottom: "1rem",
   },
   body: {
     marginTop: "2rem",
@@ -56,16 +55,13 @@ const styles = {
     fontFamily: "SCDream4",
     color: "#414141",
   },
-  Button: {
-    marginLeft: "auto",
-    marginTop: "1rem",
-  },
 };
 const useStyles = makeStyles(styles);
 
 const tagOption = {
   name: "",
   description: "",
+  image_url: "",
 };
 const tagReducer = (prevState, action) => {
   switch (action.type) {
@@ -78,6 +74,11 @@ const tagReducer = (prevState, action) => {
       return {
         ...prevState,
         description: action.result,
+      };
+    case "imageUrl":
+      return {
+        ...prevState,
+        image_url: `${assetPath.tech_stack}/${action.result}`,
       };
   }
 };
@@ -98,9 +99,11 @@ const uploadToServer = async (image) => {
 const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
-const handelStackSubmit = async (tag, category) => {
-  if (tag?.name.length !== 0) {
+const handelStackSubmit = async (image, tag, category) => {
+  if (tag?.name.length !== 0 && tag?.image_url.length !== 0) {
     const body = { ...tag };
+
+    await uploadToServer(image);
     const data = await fetch(
       `${process.env.HOSTNAME}/api/tags/${capitalizeFirstLetter(category)}/${
         tag.name
@@ -133,9 +136,21 @@ const handelStackSubmit = async (tag, category) => {
 
 const SectionGenerateTags = ({ handle, category }) => {
   const [tag, dispatch] = useReducer(tagReducer, tagOption);
+  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [createObjectURL, setCreateObjectURL] = useState(
+    "/asset/image/background/contest/default.svg"
+  );
   const classes = useStyles(styles);
 
+  const onImgChange = async (event) => {
+    if (event.target.files && event.target.files[0]) {
+      const image = event.target.files[0];
+      setImage(image);
+      setCreateObjectURL(URL.createObjectURL(image));
+      handleImageChange(image.name);
+    }
+  };
   const handleTitleChange = (data) => {
     dispatch({ type: "name", result: data.target.value });
   };
@@ -147,6 +162,7 @@ const SectionGenerateTags = ({ handle, category }) => {
   };
 
   useEffect(() => {
+    setCreateObjectURL("/asset/image/background/contest/default.svg");
     setLoading(false);
   }, []);
 
@@ -158,27 +174,47 @@ const SectionGenerateTags = ({ handle, category }) => {
         height={80}
         className={classes.svg + " " + classes.leftSVG}
       />
-      <GridContainer direction={"column"} className={classes.gridBorder}>
-        <GridItem className={classes.title}>
-          <Title onChange={handleTitleChange} />
+      <GridContainer direction={"row"} className={classes.gridBorder}>
+        <GridItem xs={4} sm={4} md={4}>
+          <GridContainer direction="column">
+            <GridItem>
+              <Image src={createObjectURL} width={270} height={270} />
+            </GridItem>
+            <GridItem>
+              <IconButton variant="contained" component="label">
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={onImgChange}
+                />
+                <AddAPhotoRoundedIcon />
+              </IconButton>
+            </GridItem>
+          </GridContainer>
         </GridItem>
-        <Editor
-          onChangeHandle={handleDescriptionChange}
-          editorLoaded={true}
-          name="testName"
-          data=""
-        />
-
-        <IconButton
-          className={classes.Button}
-          onClickCapture={async () => {
-            await handelStackSubmit(tag, category).then(() => {
-              handle === undefined ? null : handle(tag);
-            });
-          }}
-        >
-          <SaveAltRoundedIcon />
-        </IconButton>
+        <GridItem xs={8} sm={8} md={8}>
+          <GridContainer direction="column">
+            <Title onChange={handleTitleChange} />
+            <Editor
+              onChangeHandle={handleDescriptionChange}
+              editorLoaded={true}
+              name="testName"
+              data=""
+            />
+            <GridItem>
+              <IconButton
+                onClickCapture={async () => {
+                  await handelStackSubmit(image, tag, category).then(() => {
+                    handle === undefined ? null : handle(tag);
+                  });
+                }}
+              >
+                <SaveAltRoundedIcon />
+              </IconButton>
+            </GridItem>
+          </GridContainer>
+        </GridItem>
       </GridContainer>
       <CommaDark
         width={80}

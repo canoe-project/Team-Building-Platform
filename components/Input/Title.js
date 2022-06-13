@@ -33,7 +33,12 @@ function MyFormHelperText() {
   return <FormHelperText>{helperText}</FormHelperText>;
 }
 
-export default function UseFormControl({ onChange, data, placeholder }) {
+export default function UseFormControl({
+  onChange,
+  data,
+  placeholder,
+  claasName,
+}) {
   return (
     <Fragment>
       <StyledInputBase
@@ -45,6 +50,7 @@ export default function UseFormControl({ onChange, data, placeholder }) {
         }}
         value={data}
         autoFocus
+        className={claasName}
       />
       {/* <MyFormHelperText focusedText={focusedText} /> */}
     </Fragment>

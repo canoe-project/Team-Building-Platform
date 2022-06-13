@@ -243,9 +243,9 @@ const Overview = ({ data }) => {
                 </GridItem>
 
                 <GridItem>
-                  <pageLabels>
+                  <Typography>
                     {moment(data.article.createdAt).format("YYYY.MM.DD")}
-                  </pageLabels>
+                  </Typography>
                 </GridItem>
               </GridContainer>
             </GridItem>

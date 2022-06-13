@@ -31,6 +31,9 @@ import CommonTag from "../../../components/Tags/CommonTag/CommonTag";
 import TagRoot from "../../../components/Tags/TagRoot";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import MainLayout from "../../../components/Layout/MainLayout";
+import SectionGenerateTags from "../../../pages-sections/tags/SectionGenerateTags";
+import SectionGenerateTagsImage from "../../../pages-sections/tags/SectionGenerateTagsImage";
+
 const pageLabels = {
   edittingButton: "수정",
   deleteButton: "삭제",
@@ -285,6 +288,7 @@ const Overview = ({
       setTechStack(contestValue.tech_stack),
       setProfesstion([contestValue.profession[0]]),
       setSelectTag(contestValue.Tag),
+      setImageURL(imageURLValue),
     ]).then(() => {
       setLoading(false);
     });
@@ -296,6 +300,7 @@ const Overview = ({
       setTechStack(contestValue.tech_stack),
       setProfesstion([contestValue.profession[0]]),
       setSelectTag(contestValue.Tag),
+      setImageURL(imageURLValue),
     ]).then(() => {
       setLoading(false);
     });
@@ -365,7 +370,6 @@ const Overview = ({
       imageURL,
       selectTag
     );
-    handleEditing();
   };
 
   if (loading) return <div>Loading...</div>;
@@ -392,6 +396,13 @@ const Overview = ({
                   size={12}
                   direction={"row"}
                   handle={handleProfesstion}
+                  modal={
+                    <SectionGenerateTagsImage
+                      category={"profession"}
+                      handle={handleProfesstion}
+                    />
+                  }
+                  modalLabel={"분야 생성"}
                 >
                   <ProfessionsItem />
                 </Searcher>
@@ -426,6 +437,13 @@ const Overview = ({
                       size={12}
                       direction={"column"}
                       handle={handleTag}
+                      modal={
+                        <SectionGenerateTags
+                          category={"tag"}
+                          handle={handleTag}
+                        />
+                      }
+                      modalLabel={"태그 생성"}
                     >
                       <TagItem />
                     </Searcher>
@@ -585,6 +603,13 @@ const Overview = ({
                               size={12}
                               direction={"row"}
                               handle={handleTechStack}
+                              modal={
+                                <SectionGenerateTagsImage
+                                  category={"techStack"}
+                                  handle={handleTechStack}
+                                />
+                              }
+                              modalLabel={"기술 스택 생성"}
                             >
                               <TechStackItem />
                             </Searcher>
@@ -614,7 +639,9 @@ const Overview = ({
       <IconButton
         className={classes.createButton}
         onClickCapture={async () => {
-          await handlePublished();
+          await handlePublished().then(() => {
+            router.reload(window.location.pathname);
+          });
         }}
       >
         <SaveAltIcon

@@ -13,14 +13,16 @@ import { useRouter } from "next/router";
 import FilrerContainer from "../../../components/Article/PageFiler/FilerContain";
 import FilterMenuItem from "../../../components/Article/PageFiler/FilterMenuItem";
 import FilterToggleItem from "../../../components/Article/PageFiler/FilterToggleItem";
-import { IconButton, Typography } from "@material-ui/core";
+import { Chip, IconButton, Typography } from "@material-ui/core";
 import AddIcon from "@mui/icons-material/Add";
 import palettes from "../../../styles/nextjs-material-kit/palettes";
 // import FilterToggleItem from "../../../components/Article/PageFiler/FilterToggleItem";
 import TagRoot from "../../../components/Tags/TagRoot";
 import CommonTag from "../../../components/Tags/CommonTag/CommonTag";
 import Button from "../../../components/CustomButtons/Button";
-
+import Searcher from "../../../components/Tags/Searcher/Search";
+import ProfessionsItem from "../../../components/Tags/Searcher/SearcherItem/ProfessionsItem";
+import SearchChip from "../../../components/Tags/Searcher/SearcherButton/SearchChip";
 const pageLabels = {
   professionFilter: "분야",
   contestCreateButtonLabel: "대회 생성 하기",
@@ -184,7 +186,7 @@ export default function CompetitionSearchPage({
   };
 
   const handleMenuClick = (profession) => {
-    setProfession(profession);
+    setProfession(profession.name);
   };
   const reqTag = (tagName) => {
     if (tagName !== undefined) {
@@ -225,11 +227,18 @@ export default function CompetitionSearchPage({
         </GridItem>
         <GridItem xs={12} sm={12} md={12} className={classes.filterGridItem}>
           <FilrerContainer>
-            <FilterMenuItem
-              items={profession}
-              label={pageLabels.professionFilter}
-              handleMenuClick={handleMenuClick}
-            />
+            <Searcher
+              index={"professtion_index"}
+              filed={["name", "description", "type"]}
+              basicQuery={"professtion"}
+              size={24}
+              direction={"row"}
+              modalLabel={"분야 생성"}
+              button={<SearchChip label={pageLabels.professionFilter} />}
+              handle={handleMenuClick}
+            >
+              <ProfessionsItem></ProfessionsItem>
+            </Searcher>
             <FilterToggleItem
               label={pageLabels.ascending}
               clickLabel={pageLabels.dscending}

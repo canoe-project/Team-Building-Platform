@@ -357,7 +357,6 @@ Table tag {
   id Int [pk, increment]
   name String [unique, not null]
   description String [not null]
-  tag_color String [not null]
   article Article [not null]
   team Team [not null]
   contest Contest [not null]

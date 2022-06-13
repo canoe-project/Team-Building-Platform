@@ -22,7 +22,7 @@ import moment from "moment";
 import { useRouter } from "next/router";
 import SectionHeaderImage from "../../../../pages-sections/headerImage/SectionHeaderImage";
 import createChannel from "../../../../components/StreamChat/createChannel";
-
+import SectionGenerateTagsImage from "../../../../pages-sections/tags/SectionGenerateTagsImage";
 const pageLabels = {
   roleLabel: "모집 분야",
   participantsLabel: "참여자",
@@ -316,6 +316,13 @@ const CreateTeam = ({ data }) => {
                     basicQuery={"role"}
                     size={10}
                     handle={handleSelectRole}
+                    modal={
+                      <SectionGenerateTagsImage
+                        category={"role"}
+                        handl={handleSelectRole}
+                      />
+                    }
+                    modalLabel={"역할 생성"}
                   >
                     <RoleItem />
                   </Searcher>

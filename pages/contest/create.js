@@ -29,7 +29,8 @@ import CommonTag from "../../components/Tags/CommonTag/CommonTag";
 import TagRoot from "../../components/Tags/TagRoot";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import TagItem from "../../components/Tags/Searcher/SearcherItem/TagItem";
-
+import SectionGenerateTags from "../../pages-sections/tags/SectionGenerateTags";
+import SectionGenerateTagsImage from "../../pages-sections/tags/SectionGenerateTagsImage";
 const pageLabels = {
   edittingButton: "수정",
   deleteButton: "삭제",
@@ -258,6 +259,13 @@ const Overview = () => {
     );
     setTechStack([...newTechStack, data]);
   };
+  const handleTechStackDelete = (name) => {
+    const newTechStack = selectTechStack.filter(
+      (techStack) => techStack.name !== name
+    );
+    setTechStack([...newTechStack]);
+  };
+
   const handleProfesstion = (data) => {
     const newProfesstion = selectProfesstion.filter(
       (professtion) => professtion.name !== data.name
@@ -334,6 +342,13 @@ const Overview = () => {
                   size={12}
                   direction={"row"}
                   handle={handleProfesstion}
+                  modal={
+                    <SectionGenerateTagsImage
+                      category={"profession"}
+                      handle={handleProfesstion}
+                    />
+                  }
+                  modalLabel={"분야 생성"}
                 >
                   <ProfessionsItem />
                 </Searcher>
@@ -365,6 +380,13 @@ const Overview = () => {
                       size={12}
                       direction={"column"}
                       handle={handleTag}
+                      modal={
+                        <SectionGenerateTags
+                          category={"tag"}
+                          handle={handleTag}
+                        />
+                      }
+                      modalLabel={"태그 생성"}
                     >
                       <TagItem />
                     </Searcher>
@@ -490,7 +512,10 @@ const Overview = () => {
                                   classes.borderTop
                                 }
                               >
-                                <TechStackCard data={techStack}></TechStackCard>
+                                <TechStackCard
+                                  data={techStack}
+                                  handle={handleTechStackDelete}
+                                ></TechStackCard>
                               </GridItem>
                             );
                           })}
@@ -509,6 +534,13 @@ const Overview = () => {
                               size={12}
                               direction={"row"}
                               handle={handleTechStack}
+                              modal={
+                                <SectionGenerateTagsImage
+                                  category={"techStack"}
+                                  handle={handleTechStack}
+                                />
+                              }
+                              modalLabel={"기술 스택 생성"}
                             >
                               <TechStackItem />
                             </Searcher>

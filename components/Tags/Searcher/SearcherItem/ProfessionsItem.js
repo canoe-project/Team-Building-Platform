@@ -61,8 +61,7 @@ const RoleCard = ({ data, handle }) => {
   useEffect(() => {
     setLoading(false);
   }, []);
-  useEffect(() => {
-  }, [data._source]);
+  useEffect(() => {}, [data._source]);
   if (loading) return <Fragment>Loading...</Fragment>;
   return (
     <GridItem

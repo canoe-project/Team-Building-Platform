@@ -21,7 +21,8 @@ import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import moment from "moment";
 import { useRouter } from "next/router";
 import SectionHeaderImage from "../../headerImage/SectionHeaderImage";
-
+import createChannel from "../../../components/StreamChat/createChannel";
+import SectionGenerateTagsImage from "../../../pages-sections/tags/SectionGenerateTagsImage";
 const pageLabels = {
   roleLabel: "모집 분야",
   participantsLabel: "참여자",
@@ -343,6 +344,13 @@ const CreateTeam = ({
                     basicQuery={"role"}
                     size={10}
                     handle={handleSelectRole}
+                    modal={
+                      <SectionGenerateTagsImage
+                        category={"role"}
+                        handl={handleSelectRole}
+                      />
+                    }
+                    modalLabel={"역할 생성"}
                   >
                     <RoleItem />
                   </Searcher>
@@ -362,8 +370,9 @@ const CreateTeam = ({
             team,
             router.query.id,
             imageURL
-          );
-          handleEditing();
+          ).then(() => {
+            router.reload(window.location.pathname);
+          });
         }}
       >
         <SaveAltIcon

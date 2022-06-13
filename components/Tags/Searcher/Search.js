@@ -10,8 +10,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import InputBase from "@mui/material/InputBase";
 import Image from "next/image";
 import Modal from "../../Modal/Modal";
-import GenerateTags from "../../../pages-sections/tags/SectionGenerateTags";
+import GenerateTags from "../../../pages-sections/tags/SectionGenerateTagsImage";
 import GridContainer from "../../Grid/GridContainer";
+import { Typography } from "@material-ui/core";
 const pageLabel = {
   tech_stack_append: "기술 스택 생성하기",
   tech_stack: "기술 스택 생성",
@@ -23,6 +24,9 @@ const styles = {
     padding: "1rem",
     display: "flex",
     justifyContent: "center",
+  },
+  menu: {
+    height: "30rem",
   },
 };
 const Search = styled("div")(({ theme }) => ({
@@ -100,6 +104,9 @@ export default function FadeMenu({
   children,
   size,
   direction,
+  modal,
+  modalLabel,
+  button,
 }) {
   const classes = useStyles();
   const [searchQuery, setSearchQuery] = useState("");
@@ -147,17 +154,22 @@ export default function FadeMenu({
   if (loading) return <div>loading...</div>;
   return (
     <div>
-      <IconButton
-        id="fade-button"
-        aria-controls={open ? "fade-menu" : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? "true" : undefined}
-        onClick={handleClick}
-      >
-        <AddIcon />
-      </IconButton>
+      {button === undefined ? (
+        <IconButton
+          id="fade-button"
+          aria-controls={open ? "fade-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? "true" : undefined}
+          onClick={handleClick}
+        >
+          <AddIcon />
+        </IconButton>
+      ) : (
+        cloneElement(button, { handleClick })
+      )}
       <Menu
         id="search-menu"
+        className={classes.menu}
         MenuListProps={{
           "aria-labelledby": "fade-button",
         }}
@@ -188,18 +200,16 @@ export default function FadeMenu({
             return cloneElement(children, { data, handle });
           })}
         </GridContainer>
-        <MenuItem onClick={handleModalOpen}>
-          <AddIcon />
-          {pageLabel.tech_stack_append}
-        </MenuItem>
+        {modal === undefined ? undefined : (
+          <MenuItem onClick={handleModalOpen}>
+            <AddIcon />
+            <Typography>{modalLabel}</Typography>
+          </MenuItem>
+        )}
       </Menu>
-      {/* <Modal
-        title={pageLabel.tech_stack}
-        open={modalToggle}
-        handleModalClose={handleModalClose}
-      >
-        <GenerateTags handle={handle} />
-      </Modal> */}
+      <Modal open={modalToggle} handleModalClose={handleModalClose}>
+        {modal}
+      </Modal>
     </div>
   );
 }
