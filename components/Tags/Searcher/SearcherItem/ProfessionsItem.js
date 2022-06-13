@@ -34,6 +34,7 @@ const styles = {
     height: "4rem",
     alignSelf: "center",
     borderRadius: "0.5rem",
+    padding: "1rem",
   },
   label: {
     marginTop: "0.5rem",

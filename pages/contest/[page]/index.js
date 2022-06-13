@@ -55,9 +55,9 @@ const styled = {
     bottom: "1rem",
     position: "absolute",
 
-    backgroundColor: palettes.hotPink,
+    backgroundColor: palettes.darkBlue2,
     "&:hover": {
-      background: palettes.darkPink1,
+      background: palettes.lightBlue,
     },
   },
   listItem: {
