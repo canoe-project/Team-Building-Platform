@@ -1,3 +1,5 @@
+// 배효운
+
 import { resolve } from "path";
 import prisma from "../../../utilities/prisma/client";
 
@@ -13,6 +15,7 @@ const findPartnerPage = async (req, res) => {
           tech_stack:true,
           profession:true,
           profile:true,
+          program:true,
           user_attention_profession: {
             include: {
               profession: true,
