@@ -1,3 +1,5 @@
+// 배효운
+
 import React, { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -311,7 +313,10 @@ const ContestCard = (props) => {
             title: {
               display: true,
               text: '참가한 공모전들이 권장하는 기술 스택 통계'
-            }
+            },
+            legend: {
+              display: false,
+            },
           },
           maintainAspectRatio: false
         }}
