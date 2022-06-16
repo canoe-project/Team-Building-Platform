@@ -27,7 +27,7 @@ export default function ChipsArray({ tags, type, form, children }) {
       bgcolor="text.disabled"
     >
       {tags.length !== 0
-        ? tags.map((data) => {
+        ? tags.map((data) => {ㅍㅍㅍㅍㅍㅍㅍㅍㅍㅍㅍㅍㅍ
             return (
               <ListItem key={data.id}>
                 <Tag name={data.name} type={type} form={form} />

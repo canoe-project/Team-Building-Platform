@@ -1,3 +1,7 @@
+/*
+정도현
+*/
+
 import { useEffect, useState, useReducer } from "react";
 
 import Title from "../../components/Input/Title";
@@ -85,7 +89,6 @@ const SectionGenerateProfessions = ({ handle }) => {
   const handelStackSubmit = async () => {
     if (techStack.name.length !== 0 && techStack.image_url.length !== 0) {
       const body = { ...techStack };
-
 
       await uploadToServer();
       const data = await fetch(

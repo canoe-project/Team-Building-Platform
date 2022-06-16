@@ -1,20 +1,21 @@
+/*
+정도현
+*/
+
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
 
-
-
 const ContestIndex = () => {
+  const { data: session, status } = useSession();
 
-const { data: session, status } = useSession();
+  const router = useRouter();
 
-const router = useRouter();
-
-useEffect(()=>{},[])
+  useEffect(() => {}, []);
 
   useEffect(() => {
     // Always do navigations after the first render
-    router.push("/profile/" + session.user.name , undefined, { shallow: true });
+    router.push("/profile/" + session.user.name, undefined, { shallow: true });
   }, [router]);
 
   useEffect(() => {

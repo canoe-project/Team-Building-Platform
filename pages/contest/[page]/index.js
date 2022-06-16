@@ -1,3 +1,8 @@
+/*
+정도현
+*/
+
+
 import ContestCard from "../../../components/CustomCard/Contest/ContestCard";
 import Card from "../../../components/Card/Card";
 import CardBody from "../../../components/Card/CardBody";
@@ -323,7 +328,7 @@ export default function CompetitionSearchPage({
                 md={4}
                 className={classes.listItem}
               >
-                <ContestCard contestID={d.article_id} />
+                <ContestCard contestID={d.article_id} handle={reqTag}/>
               </GridItem>
             );
           })}

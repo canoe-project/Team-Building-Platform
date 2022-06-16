@@ -1,3 +1,8 @@
+/*
+정도현
+*/
+
+
 import { useState, useEffect } from "react";
 import GridContainer from "../Grid/GridContainer";
 import GridItem from "../Grid/GridItem";

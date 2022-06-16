@@ -1,3 +1,7 @@
+/*
+정도현
+*/
+
 const contestOverView = {
   title: {
     alignItems: "center",
@@ -118,9 +122,9 @@ const contestOverView = {
     marginLeft: "auto",
     marginBottom: "auto",
   },
-  bodyCard:{
-    minHeight : "30rem"
-  }
+  bodyCard: {
+    minHeight: "30rem",
+  },
 };
 
 export default contestOverView;

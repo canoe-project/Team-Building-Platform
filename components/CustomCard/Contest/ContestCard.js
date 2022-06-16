@@ -1,3 +1,8 @@
+/*
+정도현
+*/
+
+
 import React, { Fragment, useEffect, useState } from "react";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@material-ui/core/Typography";
@@ -92,11 +97,9 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-const ContestCard = (props) => {
+const ContestCard = ({ contestID, className, handle }) => {
   const router = useRouter();
   const classes = useStyles();
-
-  const { contestID, className } = props;
 
   const [contest, setContest] = useState({});
   const [loading, setLoading] = React.useState(true);
@@ -174,6 +177,7 @@ const ContestCard = (props) => {
                     description={tag.description}
                     image={tag.image_url}
                     key={index}
+                    handle={handle}
                   ></CommonTag>
                 );
               })}

@@ -1,3 +1,7 @@
+/*
+정도현
+*/
+
 import { useEffect, useState, useReducer, Fragment } from "react";
 import { useRouter } from "next/router";
 //components

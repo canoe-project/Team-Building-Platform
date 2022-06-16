@@ -1,3 +1,7 @@
+/*
+정도현
+*/
+
 import { PrismaClient } from "@prisma/client";
 
 let prisma;

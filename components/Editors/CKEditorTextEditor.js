@@ -1,3 +1,8 @@
+/*
+정도현
+*/
+
+
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
 const Editor = ({ onChangeHandle, name, value, readOnly, className }) => {

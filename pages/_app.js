@@ -1,3 +1,8 @@
+/*
+정도현
+*/
+
+
 import { SessionProvider } from "next-auth/react";
 import "../styles/globals.css";
 import "../styles/scss/d3/areaChart.scss";

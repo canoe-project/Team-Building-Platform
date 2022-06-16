@@ -1,3 +1,7 @@
+/*
+정도현
+*/
+
 import * as React from "react";
 
 //components

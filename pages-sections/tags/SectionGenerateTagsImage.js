@@ -1,3 +1,7 @@
+/*
+정도현
+*/
+
 import { useEffect, useState, useReducer } from "react";
 
 import Title from "../../components/Input/Title";

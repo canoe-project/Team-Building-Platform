@@ -1,3 +1,8 @@
+/*
+정도현
+*/
+
+
 import Editor from "../Editors/CKEditorTextEditor";
 import { useRouter } from "next/router";
 import Button from "../CustomButtons/Button";

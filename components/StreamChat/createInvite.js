@@ -1,3 +1,8 @@
+/*
+정도현
+*/
+
+
 import { useEffect, useState } from "react";
 import { StreamChat } from "stream-chat";
 import "@stream-io/stream-chat-css/dist/css/index.css";

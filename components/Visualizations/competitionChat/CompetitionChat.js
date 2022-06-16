@@ -1,3 +1,8 @@
+/*
+정도현
+*/
+
+
 import { Fragment, forwardRef, useEffect, useRef, useState } from "react";
 
 import CompetitionBackgorund from "./competitionBackgorund.svg";

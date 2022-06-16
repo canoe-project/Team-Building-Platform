@@ -1,3 +1,7 @@
+/*
+정도현
+*/
+
 import { useState, useEffect, Fragment } from "react";
 import { Avatar } from "@material-ui/core";
 import Link from "next/link";

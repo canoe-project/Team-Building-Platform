@@ -1,3 +1,8 @@
+/*
+정도현
+*/
+
+
 import React from "react";
 
 const ContestParticipations = (props) => {

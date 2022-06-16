@@ -1,3 +1,7 @@
+/*
+정도현
+*/
+
 const styles = {
   title: {
     alignItems: "center",

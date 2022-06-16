@@ -1,3 +1,7 @@
+/*
+정도현
+*/
+
 import CommentInput from "../../components/comment/commentInput";
 import CommentContainer from "../../components/comment/commentContainer";
 import CommentItem from "../../components/Comment/CommentItem";

@@ -1,4 +1,6 @@
-
+/*
+정도현
+*/
 
 import { useEffect } from "react";
 import { useRouter } from "next/router";

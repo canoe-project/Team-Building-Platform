@@ -1,3 +1,7 @@
+/*
+정도현
+*/
+
 import palettes from "../../../../nextjs-material-kit/palettes";
 
 const mainPageStyle = {

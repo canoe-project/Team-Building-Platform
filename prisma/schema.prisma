@@ -1,3 +1,5 @@
+// 정도현
+
 generator client {
   provider = "prisma-client-js"
 }

@@ -1,3 +1,7 @@
+/*
+정도현
+*/
+
 
 export function scaleBandInvert(scale, coord) {
   const eachBand = scale.step();

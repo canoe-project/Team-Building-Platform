@@ -1,3 +1,7 @@
+/*
+정도현
+*/
+
 import MainLayout from "../components/Layout/MainLayout";
 import { Fragment, useEffect, useState, useCallback } from "react";
 import MainSVG from "../svg/main/main_art.svg";

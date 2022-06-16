@@ -1,3 +1,8 @@
+/*
+정도현
+*/
+
+
 // @flow weak
 import React from 'react';
 import PieChart from '../PieChart';

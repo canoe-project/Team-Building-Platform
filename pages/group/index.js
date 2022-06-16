@@ -1,3 +1,7 @@
+/*
+정도현
+*/
+
 import { useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 

@@ -1,3 +1,7 @@
+/*
+정도현
+*/
+
 import TeamCard from "../../../components/CustomCard/Team/TeamCard";
 import { useEffect, useState, Fragment } from "react";
 import GridContainer from "../../../components/Grid/GridContainer";
